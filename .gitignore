@@ -4,6 +4,8 @@ datasets/
 # Summaries
 summaries/
 
+BERT*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
