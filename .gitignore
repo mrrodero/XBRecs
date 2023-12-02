@@ -1,8 +1,14 @@
 # Datasets
-datasets/
+goodbooks_ext/
+books_knn.csv
+datasets/raw/*.csv
 
 # Summaries
 summaries/
+
+# Models
+models/
+!notebooks/models/
 
 BERT*
 
