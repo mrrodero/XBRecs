@@ -1,0 +1,22 @@
+experiment:
+  data_config:
+    strategy: fixed
+    # train_path: ../datasets/training/train_train.tsv
+    # validation_path: ../datasets/training/train_val.tsv
+    train_path: ../datasets/training/train_reduced.tsv
+    test_path: ../datasets/training/test_reduced.tsv
+  dataset: goodbooks-10k-ext
+  top_k: 50
+  models:
+    ProxyRecommender: 
+      path: ../datasets/training/predictions/predictions_reduced_cf_50_50.tsv
+  evaluation:
+    # Metrics for ratings
+    simple_metrics: [MAE, MSE, RMSE]
+    relevant_threshold: 0.0
+    print_results_as_triplets: True
+  path_output_rec_result: results/rec_res
+  path_output_rec_weight: results/rec_wei
+  path_output_rec_performance: results/knn/ratings
+  path_log_folder: results/log
+  # config_test: True # No funciona
