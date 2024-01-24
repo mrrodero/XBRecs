@@ -9,7 +9,7 @@ experiment:
   top_k: 50
   models:
     ProxyRecommender: 
-      path: ../datasets/training/predictions/predictions_reduced_cf_50_50.tsv
+      path: ../datasets/training/predictions/predictions_cf_0_0.tsv
   evaluation:
     # Metrics for ratings
     simple_metrics: [MAE, MSE, RMSE]
