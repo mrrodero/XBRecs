@@ -2,6 +2,7 @@
 goodbooks_ext/
 books_knn.csv
 datasets/raw/*.csv
+book_similarity.csv
 
 # Summaries
 summaries/

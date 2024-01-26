@@ -1,15 +1,15 @@
 experiment:
   data_config:
     strategy: fixed
-    # train_path: ../datasets/training/train_train.tsv
-    # validation_path: ../datasets/training/train_val.tsv
+    # train_path: ../datasets/training/train_train_reduced.tsv
+    # validation_path: ../datasets/training/train_val_reduced.tsv
     train_path: ../datasets/training/train_reduced.tsv
     test_path: ../datasets/training/test_reduced.tsv
   dataset: goodbooks-10k-ext
   top_k: 50
   models:
     ProxyRecommender: 
-      path: ../datasets/training/predictions/predictions_cb_0_0.tsv
+      path: ../datasets/training/predictions/predictions_cf_100.tsv
   evaluation:
     cutoffs: [50, 25, 10, 5]
     # Metrics for accuracy, coverage, novelty and diversity
@@ -18,5 +18,5 @@ experiment:
     print_results_as_triplets: True
   path_output_rec_result: results/rec_res
   path_output_rec_weight: results/rec_wei
-  path_output_rec_performance: results/knn/top_k
+  path_output_rec_performance: results/knn/user-user
   path_log_folder: results/log
