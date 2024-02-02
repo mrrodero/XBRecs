@@ -9,7 +9,7 @@ experiment:
   top_k: 50
   models:
     ProxyRecommender: 
-      path: ../datasets/training/predictions/predictions_cf_100.tsv
+      path: ../datasets/training/predictions/predictions_cf_100_35.tsv
   evaluation:
     cutoffs: [50, 25, 10, 5]
     # Metrics for accuracy, coverage, novelty and diversity
