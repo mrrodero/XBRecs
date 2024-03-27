@@ -1,0 +1,149 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+main {
+    margin-bottom: 35px;
+}
+
+footer {
+    background: rgba(200, 200, 200);
+    height: 25px;
+    width: 100vw;
+    font-size: min(max(12px, 1vw), 14px);
+    opacity: 1;
+}
+
+.rojo {
+    color: red;
+}
+
+.gris {
+    color: gray;
+}
+
+.container-logo {
+    max-width: 55vh;
+    min-width: 300px;
+}
+
+/* .container {
+    display: flex;
+    height: 100%;
+} */
+.left {
+    width: 50%;
+    background-color: #f0f0f0; /* Light gray background */
+    border-right: 2px solid #ccc; /* Border between left and right sections */
+    box-sizing: border-box; /* Ensure border width is included in the width calculation */
+}
+.right {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+.upper-right, .lower-right {
+    height: 50%;
+    background-color: #d0d0d0; /* Medium gray background */
+    border-bottom: 2px solid #ccc; /* Border between upper and lower sections */
+    box-sizing: border-box; /* Ensure border width is included in the height calculation */
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.no-dec {
+    text-decoration: none;
+}
+
+.boton {
+    width: 40vh;
+}
+
+.lista-cuestionarios {
+    max-height: 40vh;
+}
+
+@media screen and (orientation: landscape) {
+    .ques-list {
+        max-height: 60vh;
+        width: 75%;
+    }
+
+    .question-button {
+        width: 30%;
+    }
+}
+
+@media screen and (orientation: portrait) {
+    .ques-list {
+        max-height: 60vh;
+        width: 90%;
+    }
+
+    .question-button {
+        width: 100%;
+    }
+}
+
+.question-list {
+    height: 35vh;
+}
+
+.check {
+    fill: green;
+}
+
+.wrong {
+    fill: red;
+}
+
+.fondo {
+    /* background-image: url("img/fondo.jpg"); */
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+.h-20 {
+    height: 20vh;
+}
+
+.h-60 {
+    height: 60vh;
+}
+
+#participants {
+    height: 35vh;
+    overflow: auto;
+    margin: auto;
+}
+
+.participante {
+    display: inline;
+    width: 100px;
+}
+
+.respuesta {
+    font-size: min(max(16px, 3.5vw), 22px);
+    height: 27vh;
+}
+
+.editar {
+    background-color: #58E8CD;
+}
+
+.volver {
+    background-color: #619FFF;
+}
+
+/* .vis-network canvas {
+    pointer-events: none;
+} */

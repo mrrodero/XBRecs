@@ -1,0 +1,29 @@
+{% extends "base_generic.html" %}
+
+{% block title %}
+  Registrarse
+{% endblock %}
+
+{% block content %}
+<div class="overflow-auto main-container">
+  <div class="p-3">
+    <h2>Registrarse</h2>
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+        <p>
+          {{ field.label_tag }}<br>
+          {{ field }}
+          {% if field.help_text %}
+              <small class="gris">{{ field.help_text }}</small>
+          {% endif %}
+          {% for error in field.errors %}
+              <p class="rojo">{{ error }}</p>
+          {% endfor %}
+        </p>
+      {% endfor %}
+      <button type="submit" class="btn bg-light border border-dark rounded mt-2">Registrarse</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
