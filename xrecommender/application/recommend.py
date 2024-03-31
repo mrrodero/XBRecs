@@ -11,12 +11,13 @@ def k_nearest(user: User, k: int) -> List[Tuple[User, float]]:
     Calcula los k usuarios más próximos a un usuario.
 
     ## Parámetros:
-    - user: Objeto `User` del usuario del que queremos obtener los k usuarios
-    más próximos.
-    - k: Número de vecinos más próximos que queremos obtener.
+    - `user`: Objeto `User` del usuario del que queremos obtener los `k`
+    usuarios más próximos.
+    - `k`: Número de vecinos más próximos que queremos obtener.
 
     ## Retorna:
-    k tuplas (`User`, similitud) con los k usuarios más próximos al usuario.
+    - k tuplas (`User`, similitud) con los `k` usuarios más próximos
+    al usuario.
     """
     # Obtenemos todos los usuarios menos el usuario actual
     users = User.objects.exclude(id=user.id)
@@ -40,13 +41,13 @@ def top_k_books(
     al usuario.
 
     ## Parámetros:
-    - user: Objeto `User` del usuario al que queremos recomendar libros.
-    - nearest_users_sim: Lista de tuplas (`User`, similitud) con los usuarios
+    - `user`: Objeto `User` del usuario al que queremos recomendar libros.
+    - `nearest_users_sim`: Lista de tuplas (`User`, similitud) con los usuarios
     más próximos al usuario.
-    - k: Número de libros que queremos obtener.
+    - `k`: Número de libros que queremos obtener.
 
     ## Retorna:
-    Lista de tuplas (`Book`, prediction) con los k libros con mejor
+    - Lista de tuplas (`Book`, predicción) con los `k` libros con mejor
     valoración por los usuarios más próximos.
     """
     # Obtenemos los k usuarios más próximos y sus similitudes
@@ -84,17 +85,17 @@ def recommend_books(
     user: User, n: int = 35, k: int = 5
 ) -> List[Tuple[Book, float]]:
     """
-    Recomienda libros a un usuario basándose en los k libros mejor valorados
-    por los n usuarios más próximos.
+    Recomienda libros a un usuario basándose en los `k` libros mejor valorados
+    por los `n` usuarios más próximos.
 
     ## Parámetros:
-    - user: Objeto `User` del usuario al que queremos recomendar libros.
-    - n: Número de usuarios más próximos para los que se obtendrán
+    - `user`: Objeto `User` del usuario al que queremos recomendar libros.
+    - `n`: Número de usuarios más próximos para los que se obtendrán
     los libros mejor valorados. Por defecto su valor es 35.
-    - k: Número de libros que queremos obtener. Por defecto su valor es 5.
+    - `k`: Número de libros que queremos obtener. Por defecto su valor es 5.
 
     ## Retorna:
-    Lista de tuplas (`Book`, prediction) con los k libros que
+    - Lista de tuplas (`Book`, predicción) con los `k` libros que
     se recomiendan al usuario.
     """
     # Obtenemos los k libros mejor valorados por los n usuarios más próximos

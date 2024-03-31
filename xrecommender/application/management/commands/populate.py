@@ -73,7 +73,8 @@ class Command(BaseCommand):
                 title=row['title'],
                 year=int(row['original_publication_year'])
                 if not pd.isna(row['original_publication_year']) else -1,
-                isbn=str(row['isbn']) if not pd.isna(row['isbn']) else "",
+                isbn=str(int(row['isbn13']))
+                if not pd.isna(row['isbn13']) else "",
                 cover=row['image_url'],
                 description=row['description'],
             ) for _, row in books_full_df.iterrows()
