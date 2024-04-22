@@ -1,28 +1,44 @@
-import random
 import seaborn as sns
-from typing import Dict, List, Tuple
+from typing import Dict, List, Iterable
 
 from pyvis.network import Network
 
-from .models import User, Book, Keyword, Rating, LIKES
+from .models import User, Book, Keyword
 
 COL = 255
-RADIUS_MULT = 6
+COL_MULT = 16
+COVER_SIZE = 50
+RADIUS_MULT = 5
 HEIGHT = "750px"
 WIDTH = "100%"
-
-# TODO: Función para explicar una recomendación particular basada en
-# lecturas pasadas que gustaron al usuario (grafo que une al libro
-# con libros que también tenían sus palabras clave)
 
 # TODO: Función para mostrar más información sobre la recomendación
 # con las métricas del recomendador user-user y la similitud entre
 # embedding de libro y usuario
 
 
-def _xai_explanation_dict(
+def _get_liked_books_with_certain_keywords(
+    user: User, keywords: Iterable[Keyword]
+) -> Iterable[Book]:
+    """
+    Obtiene los libros que le gustan al usuario y que contienen
+    alguna de las palabras clave dadas.
+
+    ## Argumentos:
+    - `user`: Usuario para el que se obtendrán los libros que le gustan.
+    - `keywords`: Lista de palabras clave.
+
+    ## Retorno:
+    - Libros que le gustan al usuario y que contienen alguna
+    de las palabras clave.
+    """
+    liked_books = user.get_liked_books().filter(keywords__in=keywords)
+    return liked_books
+
+
+def _xai_explanation_full_dict(
     user: User, rec_books: List[Book]
-) -> Dict[Keyword, Tuple[List[Book], int]]:
+) -> Dict[Keyword, List[Book]]:
     """
     Obtiene la información de la explicación de las recomendaciones
     para generar grafos de explicabilidad.
@@ -34,36 +50,24 @@ def _xai_explanation_dict(
 
     ## Retorna:
     - Diccionario con las palabras clave que explican las recomendaciones
-    y los libros recomendados que contienen dichas palabras clave, junto
-    con el número de veces que aparece cada palabra clave en el perfil
-    del usuario.
+    y los libros del perfil de usuario y de los recomendados que contienen
+    dichas palabras clave.
     """
-    # Palabras clave de los libros recomendados
+    # Obtener palabras clave comunes entre los libros recomendados y el usuario
     rec_keywords = Keyword.objects.filter(book__in=rec_books)
-
-    # Obtenemos los libros que le gustan al usuario
-    liked_books = Rating.objects.filter(
-        user=user, rating__gte=LIKES
-    ).values_list('book', flat=True)
-    # Palabras clave del perfil de usuario (los libros que le gustan)
-    user_keywords = Keyword.objects.filter(book__in=liked_books)
-
-    # Palabras clave que están tanto en los libros que le gustan al usuario
-    # como en los libros recomendados
-    common_keywords = rec_keywords.intersection(user_keywords)
-
-    # Agrupamos los libros recomendados por palabras clave y contamos
-    # cuántas veces aparece cada palabra clave en el perfil de usuario
-    explain_info_dict: Dict[Keyword, Tuple[List[Book], int]] = dict()
-    for kw in common_keywords:
-        explain_info_dict[kw] = (
-            [b for b in rec_books if kw in b.keywords.all()],
-            user_keywords.filter(pk=kw.pk).count()
-        )
+    common_keywords = rec_keywords.intersection(user.get_keywords())
+    liked_books = user.get_liked_books()
+    # Los libros que le gustan al usuario y los recomendados
+    # con las palabras clave
+    liked_rec_books = list(liked_books) + rec_books
+    explain_info_dict = {
+        kw: [b for b in liked_rec_books if kw in b.keywords.all()]
+        for kw in common_keywords
+    }
     return explain_info_dict
 
 
-def _generate_random_color() -> str:
+def _generate_random_color(counter: int) -> str:
     """
     Genera un color aleatorio.
 
@@ -71,7 +75,7 @@ def _generate_random_color() -> str:
     - Color en formato hexadecimal.
     """
     color_palette = sns.color_palette("husl", 256)
-    r, g, b = random.choice(color_palette)
+    r, g, b = color_palette[COL_MULT * counter % 256]
     return f"#{int(r * COL):02x}{int(g * COL):02x}{int(b * COL):02x}"
 
 
@@ -89,7 +93,7 @@ def pyvis_graph(user: User, rec_books: List[Book]) -> Network:
     - Grafo generado con pyVis.
     """
     # Obtener información del usuario para la recomendación
-    net = Network(height='750px', width='100%', heading='')
+    net = Network(height=HEIGHT, width=WIDTH, heading='')
     # Añadir nodos de libros (serán portadas de los libros)
     for book in rec_books:
         net.add_node(
@@ -97,11 +101,23 @@ def pyvis_graph(user: User, rec_books: List[Book]) -> Network:
             shape='image',
             label=book.title,
             title=book.title,
-            image=book.cover
+            image=book.cover,
+            size=COVER_SIZE
         )
-    kw_dict = _xai_explanation_dict(user, rec_books)
-    keyword_names = [kw.word for kw in list(kw_dict.keys())]
+    kw_dict = _xai_explanation_full_dict(user, rec_books)
+    keywords = list(kw_dict.keys())
+    for book in _get_liked_books_with_certain_keywords(user, keywords):
+        net.add_node(
+            book.id,
+            shape='image',
+            label=book.title,
+            title=book.title,
+            image=book.cover,
+            size=COVER_SIZE // 2
+        )
+
     # Añadir nodos de palabras clave
+    keyword_names = [kw.word for kw in keywords]
     net.add_nodes(
         keyword_names,
         label=keyword_names,
@@ -111,18 +127,20 @@ def pyvis_graph(user: User, rec_books: List[Book]) -> Network:
     net.add_edges(
         [
             (kw.word, book.id)
-            for kw, (books, _) in kw_dict.items()
+            for kw, books in kw_dict.items()
             for book in books
         ]
     )
     # Cambiar tamaño y color de los nodos de palabras clave
     neighbor_map = net.get_adj_list()
+    i = 0
     for kw in kw_dict:
-        _, freq = kw_dict[kw]
-        radius = RADIUS_MULT * (freq + len(neighbor_map[kw.word]))
+        # _, freq = kw_dict[kw]
+        radius = RADIUS_MULT * len(neighbor_map[kw.word])
         node = net.get_node(kw.word)
         node['size'] = radius
-        node['color'] = _generate_random_color()
+        node['color'] = _generate_random_color(i)
+        i += 1
 
     return net
 

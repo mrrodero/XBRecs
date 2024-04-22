@@ -125,6 +125,26 @@ class User(AbstractUser):
         """
         return pickle.loads(self.embedding)
 
+    def get_liked_books(self) -> models.QuerySet[Book]:
+        """
+        Obtiene los libros que le gustan al usuario.
+
+        ## Retorno:
+        - Libros que le gustan al usuario.
+        """
+        return Book.objects.filter(rating__user=self, rating__rating=LIKES)
+
+    def get_keywords(self) -> models.QuerySet[Keyword]:
+        """
+        Obtiene las palabras clave de los libros que le gustan al usuario.
+
+        ## Retorno:
+        - Palabras clave de los libros que le gustan al usuario.
+        """
+        return Keyword.objects.filter(
+            book__rating__user=self, book__rating__rating=LIKES
+        ).distinct()
+
     def __str__(self) -> str:
         """
         Representación en string del perfil de usuario.

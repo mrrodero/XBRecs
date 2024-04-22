@@ -36,20 +36,29 @@ footer {
 } */
 .left {
     width: 50%;
-    background-color: #f0f0f0; /* Light gray background */
-    border-right: 2px solid #ccc; /* Border between left and right sections */
-    box-sizing: border-box; /* Ensure border width is included in the width calculation */
+    background-color: #f0f0f0;
+    /* Light gray background */
+    border-right: 2px solid #ccc;
+    /* Border between left and right sections */
+    box-sizing: border-box;
+    /* Ensure border width is included in the width calculation */
 }
+
 .right {
     width: 50%;
     display: flex;
     flex-direction: column;
 }
-.upper-right, .lower-right {
+
+.upper-right,
+.lower-right {
     height: 50%;
-    background-color: #d0d0d0; /* Medium gray background */
-    border-bottom: 2px solid #ccc; /* Border between upper and lower sections */
-    box-sizing: border-box; /* Ensure border width is included in the height calculation */
+    background-color: #d0d0d0;
+    /* Medium gray background */
+    border-bottom: 2px solid #ccc;
+    /* Border between upper and lower sections */
+    box-sizing: border-box;
+    /* Ensure border width is included in the height calculation */
 }
 
 img {
@@ -147,3 +156,73 @@ img {
 /* .vis-network canvas {
     pointer-events: none;
 } */
+
+#graph-container {
+    padding: 20px;
+    /* Optional: Add padding for space around the graph */
+    margin-bottom: 20px;
+    /* Optional: Add margin to separate from the book list */
+    height: 100%;
+    /* Fill the height of the container */
+}
+
+.book-cover-container {
+    width: 72px;
+    /* Set width for the book cover container */
+    height: 110px;
+    /* Set height for the book cover container */
+    overflow: hidden;
+    border-bottom-right-radius: 5px;
+    /* Rounded corners for the book cover */
+    border-top-right-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+    /* Smooth transition for scaling */
+}
+
+.book-cover {
+    width: 100%;
+    /* Set book cover width to fill container */
+    height: 100%;
+    /* Set book cover height to fill container */
+    transition: transform 0.3s ease;
+    /* Smooth transition for scaling */
+}
+
+.main-container {
+    border: 1px solid #ddd;
+    /* Optional: Add border for better separation */
+    border-radius: 4px;
+    /* Optional: Add border radius for rounded corners */
+    padding: 25px;
+    /* Optional: Add padding for space around the graph */
+    margin-bottom: 100px;
+    /* Optional: Add margin to separate from the book list */
+    padding-bottom: 40px;
+    margin-left: 20px;
+    margin-right: 0px;
+}
+
+.book-cover-container:hover {
+    transform: scale(1.06);
+    /* Scale up on hover */
+}
+
+.book-info {
+    margin-top: 0.5rem;
+    /* Add space between book cover and title */
+}
+
+#book-list {
+    display: flex;
+    /* Display books in a row */
+    flex-wrap: wrap;
+    /* Wrap books to the next row */
+    justify-content: space-between;
+    /* Space between books */
+    padding: 0;
+    /* Remove default padding */
+    list-style: none;
+    /* Remove default list style */
+    margin-right: 20px;
+}

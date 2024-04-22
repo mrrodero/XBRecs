@@ -5,7 +5,38 @@ Recomendaciones
 {% endblock %}
 
 {% block content %}
-<div class="overflow-auto main-container">
-    {{ net_html | safe }}
+<div class="row flex-column-reverse flex-md-row">
+    <div class="col-md-8">
+        <div class="d-flex justify-content-center">
+            <h4>Explicación visual de la recomendación</h4>
+        </div>
+        <div class="overflow-auto main-container" id="graph-container">
+            {{ net_html | safe }}
+        </div>
+    </div>
+    <div class="col-md-4 order-md-last">
+        <div class="d-flex justify-content-center">
+            <h4>Tu recomendación</h4>
+        </div>
+        <ul class="list-group" id="book-list">
+            {% for book in rec_books %}
+            <li href="#" class="list-group-item list-group-item-action">
+                <h6 class="mb-1">{{ forloop.counter }}.- {{ book.title }}</h6>
+                <div class="collapse" id="collapse-{{ book.id }}">
+                    <div class="card card-body">
+                        {{ book.description }}
+                    </div>
+                </div>
+                <div class="book-cover-container">
+                    <img src="{{ book.cover }}" alt="{{ book.title }}" class="book-cover">
+                </div>
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-{{ book.id }}"
+                    aria-expanded="false" aria-controls="collapse-{{ book.id }}">
+                    Mostrar descripción
+                </button>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 {% endblock %}

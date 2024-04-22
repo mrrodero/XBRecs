@@ -75,5 +75,6 @@ class RecommendView(generic.TemplateView):
         if user.is_authenticated:
             # Mostrar recomendaciones
             rec_books = [b for b, _ in recommend_books(user)]
+            context['rec_books'] = rec_books
             context['net_html'] = pyvis_graph_html(user, rec_books)
         return context
