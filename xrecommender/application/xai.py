@@ -7,8 +7,11 @@ from .models import User, Book, Keyword
 
 COL = 255
 COL_MULT = 16
-COVER_SIZE = 50
-RADIUS_MULT = 5
+COVER_SIZE = 80
+SMALL_COVER_SIZE = 36
+RADIUS_MULT = 6
+FONT_MIN = 20
+FONT_FACE = "monospace"
 HEIGHT = "750px"
 WIDTH = "100%"
 
@@ -102,18 +105,23 @@ def pyvis_graph(user: User, rec_books: List[Book]) -> Network:
             label=book.title,
             title=book.title,
             image=book.cover,
-            size=COVER_SIZE
+            size=COVER_SIZE,
+            font={"size": FONT_MIN, "face": FONT_FACE}
         )
     kw_dict = _xai_explanation_full_dict(user, rec_books)
     keywords = list(kw_dict.keys())
+    # Añadir nodos de libros que le gustan al usuario conectados
+    # con los libros recomendados por palabras clave
     for book in _get_liked_books_with_certain_keywords(user, keywords):
+        rating = int(4 * user.get_book_rating(book) + 1)
         net.add_node(
             book.id,
             shape='image',
-            label=book.title,
+            label=rating * "\u2B50",  # f"{rating}\u2B50",
             title=book.title,
             image=book.cover,
-            size=COVER_SIZE // 2
+            size=SMALL_COVER_SIZE,
+            font={"size": FONT_MIN, "face": FONT_FACE}
         )
 
     # Añadir nodos de palabras clave
@@ -121,7 +129,8 @@ def pyvis_graph(user: User, rec_books: List[Book]) -> Network:
     net.add_nodes(
         keyword_names,
         label=keyword_names,
-        title=keyword_names
+        title=keyword_names,
+        shape=['ellipse' for _ in keyword_names],
     )
     # Añadir aristas entre libros y palabras clave
     net.add_edges(
@@ -135,10 +144,11 @@ def pyvis_graph(user: User, rec_books: List[Book]) -> Network:
     neighbor_map = net.get_adj_list()
     i = 0
     for kw in kw_dict:
-        # _, freq = kw_dict[kw]
-        radius = RADIUS_MULT * len(neighbor_map[kw.word])
+        font = RADIUS_MULT * len(neighbor_map[kw.word])
+        if font < FONT_MIN:
+            font = FONT_MIN
         node = net.get_node(kw.word)
-        node['size'] = radius
+        node['font'] = {"size": font, "face": FONT_FACE}
         node['color'] = _generate_random_color(i)
         i += 1
 

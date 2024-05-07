@@ -210,6 +210,8 @@ img {
 
 .book-info {
     margin-top: 0.5rem;
+    margin-left: 10px;
+    padding-left: 10px;
     /* Add space between book cover and title */
 }
 

@@ -125,6 +125,20 @@ class User(AbstractUser):
         """
         return pickle.loads(self.embedding)
 
+    def get_book_rating(self, book: Book) -> float:
+        """
+        Obtiene la valoración del usuario para un libro.
+
+        ## Argumentos:
+        - `book`: Libro para el que se obtendrá la valoración.
+
+        ## Retorno:
+        - Valoración del usuario para el libro.
+        """
+        return Rating.objects.filter(
+            user=self, book=book
+        ).first().rating
+
     def get_liked_books(self) -> models.QuerySet[Book]:
         """
         Obtiene los libros que le gustan al usuario.
@@ -132,7 +146,9 @@ class User(AbstractUser):
         ## Retorno:
         - Libros que le gustan al usuario.
         """
-        return Book.objects.filter(rating__user=self, rating__rating=LIKES)
+        return Book.objects.filter(
+            rating__user=self, rating__rating__gte=LIKES
+        ).distinct()
 
     def get_keywords(self) -> models.QuerySet[Keyword]:
         """
@@ -142,7 +158,7 @@ class User(AbstractUser):
         - Palabras clave de los libros que le gustan al usuario.
         """
         return Keyword.objects.filter(
-            book__rating__user=self, book__rating__rating=LIKES
+            book__rating__user=self, book__rating__rating__gte=LIKES
         ).distinct()
 
     def __str__(self) -> str:

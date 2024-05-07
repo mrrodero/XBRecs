@@ -5,7 +5,7 @@ Recomendaciones
 {% endblock %}
 
 {% block content %}
-<div class="row flex-column-reverse flex-md-row">
+<div class="row">
     <div class="col-md-8">
         <div class="d-flex justify-content-center">
             <h4>Explicación visual de la recomendación</h4>
@@ -18,25 +18,28 @@ Recomendaciones
         <div class="d-flex justify-content-center">
             <h4>Tu recomendación</h4>
         </div>
-        <ul class="list-group" id="book-list">
+        <!-- <div class="list-group" id="book-list"> -->
             {% for book in rec_books %}
-            <li href="#" class="list-group-item list-group-item-action">
-                <h6 class="mb-1">{{ forloop.counter }}.- {{ book.title }}</h6>
-                <div class="collapse" id="collapse-{{ book.id }}">
-                    <div class="card card-body">
-                        {{ book.description }}
+            <div href="#" class="list-group">
+                <div class="d-flex justify-content-center list-group-item list-group-item-action">
+                    <h6 class="mb-1">{{ forloop.counter }}.- {{ book.title }}</h6>
+                </div>
+                <div class="d-flex justify-content-between list-group-item">
+                    <div class="book-cover-container">
+                        <img src="{{ book.cover }}" alt="{{ book.title }}" class="book-cover">
+                    </div>
+                    <div class="book-info">
+                        <p class="mb-1"><b>Autor: </b> {{ book.authors.all.0.name }}</p>
+                        <p class="mb-1"><b>Año de publicación:</b> {{ book.year }}</p>
+                        <p class="mb-1"><b>ISBN:</b> {{ book.isbn }}</p>
+                    </div>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <a href="{% url 'home' %}" class="nav-link text-secondary">Ver libro</a>
                     </div>
                 </div>
-                <div class="book-cover-container">
-                    <img src="{{ book.cover }}" alt="{{ book.title }}" class="book-cover">
-                </div>
-                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-{{ book.id }}"
-                    aria-expanded="false" aria-controls="collapse-{{ book.id }}">
-                    Mostrar descripción
-                </button>
-            </li>
+            </div>
             {% endfor %}
-        </ul>
+        <!-- </div> -->
     </div>
 </div>
 {% endblock %}

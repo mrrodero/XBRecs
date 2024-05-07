@@ -16,7 +16,6 @@
                             {{ user.get_username }}
                         </div>
                         <div class="mt-3 h4 bg-light border border-dark rounded p-3">
-                            <!-- <a class="nav-link text-secondary" href="{% url 'logout' %}">Cerrar Sesión</a> -->
                             <form method="post" action="{% url 'logout' %}">
                                 {% csrf_token %}
                                 <button type="submit" class="nav-link text-secondary">Cerrar Sesión</button>
