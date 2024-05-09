@@ -4,7 +4,11 @@ from django.contrib.auth import login, authenticate
 
 from .forms import SignUpForm
 from .recommend import recommend_books
-from .xai import pyvis_graph_html
+from .xai import (
+    xai_explanation_dict,
+    sort_rec_books_by_keyword_count,
+    pyvis_graph_html
+)
 
 
 class HomeView(generic.TemplateView):
@@ -75,6 +79,12 @@ class RecommendView(generic.TemplateView):
         if user.is_authenticated:
             # Mostrar recomendaciones
             rec_books = [b for b, _ in recommend_books(user)]
-            context['rec_books'] = rec_books
-            context['net_html'] = pyvis_graph_html(user, rec_books)
+            explain_info_dict = xai_explanation_dict(user, rec_books)
+            sorted_rec_books = sort_rec_books_by_keyword_count(
+                explain_info_dict, rec_books
+            )
+            context['rec_books'] = sorted_rec_books
+            context['net_html'] = pyvis_graph_html(
+                user, sorted_rec_books, explain_info_dict
+            )
         return context

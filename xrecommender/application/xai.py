@@ -11,6 +11,7 @@ COVER_SIZE = 80
 SMALL_COVER_SIZE = 36
 RADIUS_MULT = 6
 FONT_MIN = 20
+FONT_MAX = 60
 FONT_FACE = "monospace"
 HEIGHT = "750px"
 WIDTH = "100%"
@@ -39,7 +40,7 @@ def _get_liked_books_with_certain_keywords(
     return liked_books
 
 
-def _xai_explanation_full_dict(
+def xai_explanation_dict(
     user: User, rec_books: List[Book]
 ) -> Dict[Keyword, List[Book]]:
     """
@@ -70,6 +71,35 @@ def _xai_explanation_full_dict(
     return explain_info_dict
 
 
+def sort_rec_books_by_keyword_count(
+    explain_info_dict: Dict[Keyword, List[Book]],
+    rec_books: List[Book]
+) -> List[Book]:
+    """
+    Ordena los libros recomendados por la cantidad de palabras clave.
+
+    ## Argumentos:
+    - `explain_info_dict`: Diccionario con las palabras clave que explican
+    las recomendaciones y los libros del perfil de usuario y de los
+    recomendados que contienen dichas palabras clave.
+    - `rec_books`: Lista de libros recomendados.
+
+    ## Retorno:
+    - Lista de libros recomendados ordenados por la importancia de las
+    palabras clave que explican las recomendaciones.
+    """
+    # Ordenar los libros recomendados por la cantidad de palabras clave
+    rec_books = sorted(
+        rec_books,
+        key=lambda book: sum(
+            len(explain_info_dict.get(kw)) for kw in book.keywords.all()
+            if explain_info_dict.get(kw) is not None
+        ),
+        reverse=True
+    )
+    return rec_books
+
+
 def _generate_random_color(counter: int) -> str:
     """
     Genera un color aleatorio.
@@ -82,7 +112,11 @@ def _generate_random_color(counter: int) -> str:
     return f"#{int(r * COL):02x}{int(g * COL):02x}{int(b * COL):02x}"
 
 
-def pyvis_graph(user: User, rec_books: List[Book]) -> Network:
+def _pyvis_graph(
+    user: User,
+    rec_books: List[Book],
+    kw_dict: Dict[Keyword, List[Book]]
+) -> Network:
     """
     Método para generar un grafo con la librería pyVis y
     devolver su código HTML.
@@ -91,6 +125,9 @@ def pyvis_graph(user: User, rec_books: List[Book]) -> Network:
     - `user`: Objeto `User` del usuario para el que se explicará
     la recomendación.
     - `rec_books`: Lista de libros recomendados.
+    - `kw_dict`: Diccionario con las palabras clave que explican las
+    recomendaciones y los libros del perfil de usuario y de los
+    recomendados que contienen dichas palabras clave.
 
     ## Retorno:
     - Grafo generado con pyVis.
@@ -108,7 +145,6 @@ def pyvis_graph(user: User, rec_books: List[Book]) -> Network:
             size=COVER_SIZE,
             font={"size": FONT_MIN, "face": FONT_FACE}
         )
-    kw_dict = _xai_explanation_full_dict(user, rec_books)
     keywords = list(kw_dict.keys())
     # Añadir nodos de libros que le gustan al usuario conectados
     # con los libros recomendados por palabras clave
@@ -147,6 +183,8 @@ def pyvis_graph(user: User, rec_books: List[Book]) -> Network:
         font = RADIUS_MULT * len(neighbor_map[kw.word])
         if font < FONT_MIN:
             font = FONT_MIN
+        elif font > FONT_MAX:
+            font = FONT_MAX
         node = net.get_node(kw.word)
         node['font'] = {"size": font, "face": FONT_FACE}
         node['color'] = _generate_random_color(i)
@@ -155,7 +193,11 @@ def pyvis_graph(user: User, rec_books: List[Book]) -> Network:
     return net
 
 
-def pyvis_graph_html(user: User, rec_books: List[Book]) -> str:
+def pyvis_graph_html(
+    user: User,
+    rec_books: List[Book],
+    kw_dict: Dict[Keyword, List[Book]]
+) -> str:
     """
     Método para generar un grafo con la librería pyVis y
     devolver su código HTML.
@@ -163,8 +205,11 @@ def pyvis_graph_html(user: User, rec_books: List[Book]) -> str:
     ## Argumentos:
     - `user`: Usuario para el que se generará la recomendación.
     - `rec_books`: Lista de libros recomendados.
+    - `kw_dict`: Diccionario con las palabras clave que explican las
+    recomendaciones y los libros del perfil de usuario y de los
+    recomendados que contienen dichas palabras clave.
 
     ## Retorno:
     - Código HTML del grafo.
     """
-    return pyvis_graph(user, rec_books).generate_html()
+    return _pyvis_graph(user, rec_books, kw_dict).generate_html()
