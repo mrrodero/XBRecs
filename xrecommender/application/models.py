@@ -3,8 +3,8 @@ import pickle
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-# from django.db.models.signals import post_save, post_delete
-# from django.dispatch import receiver
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
 LIKES = 0.75
 EMBEDDING_DIM = 768
@@ -139,6 +139,17 @@ class User(AbstractUser):
             user=self, book=book
         ).first().rating
 
+    def get_read_books(self) -> models.QuerySet[Book]:
+        """
+        Obtiene los libros leídos por el usuario.
+
+        ## Retorno:
+        - Libros leídos por el usuario.
+        """
+        return Book.objects.filter(
+            rating__user=self
+        ).distinct()
+
     def get_liked_books(self) -> models.QuerySet[Book]:
         """
         Obtiene los libros que le gustan al usuario.
@@ -187,48 +198,48 @@ class Rating(models.Model):
         return f'{self.user} - {self.book} - {self.rating}'
 
 
-# @receiver([post_save, post_delete], sender=Rating)
-# def update_user_embedding(sender, instance: Rating, **kwargs) -> None:
-#     """
-#     Actualiza el embedding del usuario tras añadir o eliminar una valoración.
+@receiver([post_save, post_delete], sender=Rating)
+def update_user_embedding(sender, instance: Rating, **kwargs) -> None:
+    """
+    Actualiza el embedding del usuario tras añadir o eliminar una valoración.
 
-#     ## Argumentos:
-#     - `sender`: Modelo que envía la señal.
-#     - `instance`: Instancia de la señal.
-#     - `kwargs`: Argumentos adicionales.
-#     """
-#     # Actualización de la suma de las valoraciones
-#     user = instance.user
-#     rating = instance.rating
-#     new_sum_ratings = user.sum_ratings
-#     if kwargs['signal'] == post_save:
-#         new_sum_ratings += rating
-#     else:
-#         new_sum_ratings -= rating
+    ## Argumentos:
+    - `sender`: Modelo que envía la señal.
+    - `instance`: Instancia de la señal.
+    - `kwargs`: Argumentos adicionales.
+    """
+    # Actualización de la suma de las valoraciones
+    user = instance.user
+    rating = instance.rating
+    new_sum_ratings = user.sum_ratings
+    if kwargs['signal'] == post_save:
+        new_sum_ratings += rating
+    else:
+        new_sum_ratings -= rating
 
-#     user.sum_ratings = new_sum_ratings
-#     user.save()
+    user.sum_ratings = new_sum_ratings
+    user.save()
 
-#     # Si la valoración es negativa, no se actualiza el embedding
-#     if rating < LIKES:
-#         return
+    # Si la valoración es negativa, no se actualiza el embedding
+    if rating < LIKES:
+        return
 
-#     # Actualización del embedding
-#     book_embedding = instance.book.get_embedding()
-#     new_user_embedding = user.get_embedding()
-#     if kwargs['signal'] == post_save:
-#         new_user_embedding += rating * book_embedding
-#     else:
-#         new_user_embedding -= rating * book_embedding
+    # Actualización del embedding
+    book_embedding = instance.book.get_embedding()
+    new_user_embedding = user.get_embedding()
+    if kwargs['signal'] == post_save:
+        new_user_embedding += rating * book_embedding
+    else:
+        new_user_embedding -= rating * book_embedding
 
-#     # Suma ponderada de las valoraciones
-#     if new_sum_ratings != 0.0:
-#         new_user_embedding /= new_sum_ratings
+    # Suma ponderada de las valoraciones
+    if new_sum_ratings != 0.0:
+        new_user_embedding /= new_sum_ratings
 
-#     # Normalización del embedding
-#     norm = np.linalg.norm(new_user_embedding)
-#     if norm != 0.0:
-#         new_user_embedding /= norm
+    # Normalización del embedding
+    norm = np.linalg.norm(new_user_embedding)
+    if norm != 0.0:
+        new_user_embedding /= norm
 
-#     user.set_embedding(new_user_embedding)
-#     user.save()
+    user.set_embedding(new_user_embedding)
+    user.save()
