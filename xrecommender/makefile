@@ -19,6 +19,9 @@ populate:
 test_app:
 	$(CMD) test application.tests
 
+rebuild_index:
+	$(CMD) rebuild_index
+
 init_db:
 	dropdb -U alumnodb -h localhost tfg
 	createdb -U alumnodb -h localhost tfg
