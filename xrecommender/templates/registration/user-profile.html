@@ -1,0 +1,17 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+  Mi perfil
+{% endblock %}
+
+{% block content %}
+  <h1 style="margin-left: 20px;">Libros leídos</h1>
+  <ul>
+    {% for book in books %}
+    <div class="d-flex justify-content-left align-items-center" style="margin-left: 20px;">
+      <a href="{% url 'book-detail' book_id=book.id %}" class="nav-link text-secondary">{{ book.title }}</a>
+    </div>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'discover' %}" style="margin-left: 20px;">Añadir lectura</a>
+{% endblock %}

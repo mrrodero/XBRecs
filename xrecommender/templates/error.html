@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="overflow-auto main-container">
+<div class="text-center mt-3">
+    <h2 class="text-danger">
+        {{ error }}
+    </h2>
+    <a href="{% url 'home' %}" class="btn btn-primary text-white mt-5">
+        Volver a inicio
+    </a>
+</div>
+</div>
+{% endblock %}
