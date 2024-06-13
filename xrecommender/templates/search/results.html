@@ -1,0 +1,59 @@
+{% if book_results %}
+<div class="row">
+    {% for result in book_results %}
+    <div class="col-md-6 mb-4">
+        <div class="d-flex align-items-center">
+            <div class="book-cover-container mr-3">
+                <img src="{{ result.object.cover }}" alt="{{ result.object.title }}" class="book-cover">
+            </div>
+            <div style="margin-left: 20px;">
+                <h4>{{ result.object.title }}</h4>
+                <div class="rating" id="{{ result.object.id }}">
+                    <div class="rating-stars">
+                        <i class="far fa-star star" data-index="1"></i>
+                        <i class="far fa-star star" data-index="2"></i>
+                        <i class="far fa-star star" data-index="3"></i>
+                        <i class="far fa-star star" data-index="4"></i>
+                        <i class="far fa-star star" data-index="5"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>No results found.</p>
+{% endif %}
+
+<script>
+    $(document).ready(function () {
+        // Handle star rating click
+        $('.rating-stars .star').click(function () {
+            var index = $(this).data('index');
+            var bookId = $(this).closest('.rating').attr('id');
+
+            // Highlight the selected stars
+            $(this).siblings('.star').removeClass('far').addClass('fas');
+            $(this).prevAll('.star').removeClass('far').addClass('fas');
+            $(this).addClass('fas');
+            $(this).nextAll('.star').removeClass('fas').addClass('far');
+
+            // AJAX to save the rating
+            $.ajax({
+                method: 'POST',
+                url: 'book-rate/' + bookId + '/',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    rating: index
+                },
+                success: function (response) {
+                    console.log(response.message);
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+</script>

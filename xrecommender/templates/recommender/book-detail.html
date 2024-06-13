@@ -1,0 +1,23 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+{{ book.title }}
+{% endblock %}
+
+
+{% block content %}
+<div class="list-group" style="margin-left: 20px; margin-right: 20px;">
+    <div class="d-flex justify-content-center list-group-item list-group-item-action">
+        <h3 class="mb-1">{{ book.title }}</h6>
+    </div>
+    <div class="d-flex justify-content-between list-group-item">
+        <img src="{{ book.cover }}" alt="{{ book.title }}">
+        <div class="book-info">
+            <p class="mb-1"><b>Autor: </b> {{ book.authors.all.0.name }}</p>
+            <p class="mb-1"><b>Año de publicación:</b> {{ book.year }}</p>
+            <p class="mb-1"><b>Descripción: </b> {{ book.description }}</p>
+            <p class="mb-1"><b>ISBN:</b> {{ book.isbn }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

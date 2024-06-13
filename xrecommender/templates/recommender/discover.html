@@ -1,0 +1,36 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+Búsqueda de libros
+{% endblock %}
+
+{% block content %}
+<div class="overflow-auto main-container" style="margin-right: 20px;">
+  <h3 class="text-info">
+    Busca libros para descubrir nuevas lecturas
+  </h3>
+  <form id="search-form" class="form-inline d-flex align-items-center">
+    <input id="search-input" class="form-control mr-sm-2" type="search" style="width: 70%; margin-right: 10px;"
+      placeholder="Buscar libros..." aria-label="Buscar">
+    <button class="btn btn-outline-success ml-2" type="submit" name="Buscar">Buscar</button>
+  </form>
+  <div id="search-results" class="mt-4"></div>
+</div>
+
+<script>
+  $('#search-form').on('submit', function (event) {
+    event.preventDefault();
+    var query = $('#search-input').val();
+    $.ajax({
+      url: "{% url 'search' %}",
+      data: {
+        'q': query
+      },
+      success: function (data) {
+        $('#search-results').html(data);
+      }
+    });
+  });
+</script>
+
+{% endblock %}
