@@ -180,10 +180,33 @@ img {
     /* Smooth transition for scaling */
 }
 
+.book-cover-container-big {
+    width: 144px;
+    /* Set width for the book cover container */
+    height: 220px;
+    /* Set height for the book cover container */
+    overflow: hidden;
+    border-bottom-right-radius: 20px;
+    /* Rounded corners for the book cover */
+    border-top-right-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+    /* Smooth transition for scaling */
+}
+
 .book-cover {
     width: 100%;
     /* Set book cover width to fill container */
     height: 100%;
+    /* Set book cover height to fill container */
+    transition: transform 0.3s ease;
+    /* Smooth transition for scaling */
+}
+
+.book-cover-big {
+    width: 300%;
+    /* Set book cover width to fill container */
+    height: 300%;
     /* Set book cover height to fill container */
     transition: transform 0.3s ease;
     /* Smooth transition for scaling */
@@ -227,4 +250,64 @@ img {
     list-style: none;
     /* Remove default list style */
     margin-right: 20px;
+}
+
+.form-inputs {
+    position: relative;
+}
+
+.form-inputs input[type="text"] {
+    padding-right: 40px;
+    /* Make space for the search icon */
+}
+
+.form-inputs .fa-search {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+    pointer-events: none;
+    /* Ensure the icon does not block input field clicks */
+}
+
+.form-inline .btn {
+    margin-left: 20px;
+    /* Add some space between the input and the button */
+}
+
+@media (max-width: 576px) {
+    .form-inline input[type="search"] {
+        width: calc(100% - 60px);
+        /* Adjust the width for smaller screens */
+    }
+}
+
+.rating {
+    margin-top: 0.5rem;
+}
+
+.rating-stars {
+    display: flex;
+}
+
+.rating-stars .star {
+    font-size: 24px;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.rating-stars .star:hover,
+.rating-stars .star.hovered,
+.rating-stars .star.selected {
+    color: #ffc107;
+    /* Yellow color for hovered and selected stars */
+}
+
+img {
+    float: left;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
 }
