@@ -1,17 +1,80 @@
 {% extends 'base_generic.html' %}
 
 {% block title %}
-  Mi perfil
+Mi perfil
 {% endblock %}
 
 {% block content %}
-  <h1 style="margin-left: 20px;">Libros leídos</h1>
-  <ul>
-    {% for book in books %}
-    <div class="d-flex justify-content-left align-items-center" style="margin-left: 20px;">
+<div class="row" style="margin-left: 30px;">
+  <div class="col-md-6 mb-4">
+    <h2 class="align-center">Libros leídos</h2>
+    <a href="{% url 'discover' %}" class="btn btn-outline-success ml-2" style="width: 150px; height: auto;">Añadir
+      lectura</a>
+  </div>
+</div>
+<div class="row" style="margin-left: 30px;">
+  {% for book in books %}
+  <!-- <div class="d-flex justify-content-left align-items-center" style="margin-left: 20px;">
       <a href="{% url 'book-detail' book_id=book.id %}" class="nav-link text-secondary">{{ book.title }}</a>
+    </div> -->
+  <div class="col-md-6 mb-4">
+    <div class="d-flex align-items-center">
+      <div class="book-cover-container mr-3">
+        <a href="{% url 'book-detail' book_id=book.id %}">
+          <img src="{{ book.cover }}" alt="{{ book.title }}" class="book-cover">
+        </a>
+      </div>
+      <div style="margin-left: 20px;">
+        <a href="{% url 'book-detail' book_id=book.id %}" class="nav-link text-secondary">
+          <h4>{{ book.title }}</h4>
+        </a>
+        {% load dict_filter %}
+        <div class="rating" id="{{ book.id }}">
+          <div class="rating-stars">
+            {% for i in "12345" %}
+              {% if forloop.counter <= user_ratings|get_item:book.id %}
+                <i class="fas fa-star star" data-index="{{ forloop.counter }}"></i>
+              {% else %}
+                <i class="far fa-star star" data-index="{{ forloop.counter }}"></i>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
     </div>
-    {% endfor %}
-  </ul>
-  <a href="{% url 'discover' %}" style="margin-left: 20px;">Añadir lectura</a>
+  </div>
+  {% endfor %}
+</div>
+<script>
+  $(document).ready(function () {
+    console.log("{{ user_ratings.276 }}")
+    // Handle star rating click
+    $('.rating-stars .star').click(function () {
+      var index = $(this).data('index');
+      var bookId = $(this).closest('.rating').attr('id');
+
+      // Highlight the selected stars
+      $(this).siblings('.star').removeClass('far').addClass('fas');
+      $(this).prevAll('.star').removeClass('far').addClass('fas');
+      $(this).addClass('fas');
+      $(this).nextAll('.star').removeClass('fas').addClass('far');
+
+      // AJAX to save the rating
+      $.ajax({
+        method: 'POST',
+        url: '/application/book-rate/' + bookId + '/',
+        data: {
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+          rating: index
+        },
+        success: function (response) {
+          console.log(response.message);
+        },
+        error: function (xhr, status, error) {
+          console.error(xhr.responseText);
+        }
+      });
+    });
+  });
+</script>
 {% endblock %}

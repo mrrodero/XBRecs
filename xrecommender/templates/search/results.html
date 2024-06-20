@@ -4,19 +4,26 @@
     <div class="col-md-6 mb-4">
         <div class="d-flex align-items-center">
             <div class="book-cover-container mr-3">
-                <img src="{{ result.object.cover }}" alt="{{ result.object.title }}" class="book-cover">
+                <a href="{% url 'book-detail' book_id=result.object.id %}">
+                    <img src="{{ result.object.cover }}" alt="{{ result.object.title }}" class="book-cover">
+                </a>
             </div>
             <div style="margin-left: 20px;">
-                <h4>{{ result.object.title }}</h4>
+                <a href="{% url 'book-detail' book_id=result.object.id %}" class="nav-link text-secondary">
+                    <h4>{{ result.object.title }}</h4>
+                </a>
+                <!-- {% load dict_filter %}
                 <div class="rating" id="{{ result.object.id }}">
                     <div class="rating-stars">
-                        <i class="far fa-star star" data-index="1"></i>
-                        <i class="far fa-star star" data-index="2"></i>
-                        <i class="far fa-star star" data-index="3"></i>
-                        <i class="far fa-star star" data-index="4"></i>
-                        <i class="far fa-star star" data-index="5"></i>
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= user_ratings|get_item:result.object.id %}
+                                <i class="fas fa-star star" data-index="{{ forloop.counter }}"></i>
+                            {% else %}
+                                <i class="far fa-star star" data-index="{{ forloop.counter }}"></i>
+                            {% endif %}
+                        {% endfor %}
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -42,7 +49,7 @@
             // AJAX to save the rating
             $.ajax({
                 method: 'POST',
-                url: 'book-rate/' + bookId + '/',
+                url: '/application/book-rate/' + bookId + '/',
                 data: {
                     csrfmiddlewaretoken: '{{ csrf_token }}',
                     rating: index

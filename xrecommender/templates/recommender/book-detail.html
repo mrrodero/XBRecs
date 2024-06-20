@@ -8,11 +8,23 @@
 {% block content %}
 <div class="list-group" style="margin-left: 20px; margin-right: 20px;">
     <div class="d-flex justify-content-center list-group-item list-group-item-action">
-        <h3 class="mb-1">{{ book.title }}</h6>
+        <h3 class="mb-1">{{ book.title }}</h3>
     </div>
     <div class="d-flex justify-content-between list-group-item">
-        <img src="{{ book.cover }}" alt="{{ book.title }}">
-        <div class="book-info">
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <img src="{{ book.cover }}" alt="{{ book.title }}"
+                style="margin-top: 14px; margin-left: 10px; width: 150px; height: auto;">
+            <div class="rating" id="{{ book.id }}" style="margin-top: 10px;">
+                <div class="rating-stars">
+                    <i class="far fa-star star" data-index="1"></i>
+                    <i class="far fa-star star" data-index="2"></i>
+                    <i class="far fa-star star" data-index="3"></i>
+                    <i class="far fa-star star" data-index="4"></i>
+                    <i class="far fa-star star" data-index="5"></i>
+                </div>
+            </div>
+        </div>
+        <div class="book-info" style="flex: 1; padding-left: 20px;">
             <p class="mb-1"><b>Autor: </b> {{ book.authors.all.0.name }}</p>
             <p class="mb-1"><b>Año de publicación:</b> {{ book.year }}</p>
             <p class="mb-1"><b>Descripción: </b> {{ book.description }}</p>
@@ -20,4 +32,46 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        // Fill by default the stars that the user has already rated
+        var userRating = "{{ user_rating }}";
+        if (userRating) {
+            $('.rating-stars .star').each(function (index) {
+                if (index < userRating) {
+                    $(this).removeClass('far').addClass('fas');
+                }
+            });
+        }
+        
+        // Handle star rating click
+        $('.rating-stars .star').click(function () {
+            var index = $(this).data('index');
+            var bookId = $(this).closest('.rating').attr('id');
+
+            // Highlight the selected stars
+            $(this).siblings('.star').removeClass('far').addClass('fas');
+            $(this).prevAll('.star').removeClass('far').addClass('fas');
+            $(this).addClass('fas');
+            $(this).nextAll('.star').removeClass('fas').addClass('far');
+
+            // AJAX to save the rating
+            $.ajax({
+                method: 'POST',
+                url: '/application/book-rate/' + bookId + '/',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    rating: index
+                },
+                success: function (response) {
+                    console.log(response.message);
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

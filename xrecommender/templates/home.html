@@ -6,31 +6,42 @@ XBRecs
 
 {% block content %}
 <div class="overflow-auto main-container" style="margin-right: 20px;">
-  <div class="p-3 text-center">
+  <div class="p-3 text-left">
     <h1 class="text-info">
       XBRecs, un recomendador de libros explicable.
     </h1>
-    <p>
-      XBRecs es un recomendador de libros que te permite descubrir nuevos libros basados en tus gustos
-      personales. Además, te explicamos por qué te recomendamos cada libro.
-    </p>
+    <h4>
+      XBRecs es un recomendador de libros que te permite descubrir nuevos libros basándose en las descripciones de
+      aquellos libros que hayas disfrutado. Además, te explicamos visualmente por qué te recomendamos cada libro.
+    </h4>
 
     {% if user.is_authenticated %}
-    <div class="container mt-4">
+    <!-- <br>
+    <h4>Puedes visitar <a href="{% url 'profile' %}" class="nav-link text-secondary">tu perfil</a> para recordar qué
+      libros has leído.</h4> -->
+    <div class="container mt-4 text-center">
       <div class="row mt-4">
         <div>
-          <a class="btn bg-light border border-dark rounded mt-2 boton" href="{% url 'recommend' %}">
-            Mostrar recomendador de libros
-          </a>
+          <p class="mt-2"><strong>Número de libros a recomendar:</strong> <span id="book-count">5</span></p>
+          <input type="range" class="custom-range" style="width: 15%;" min="1" max="15" value="5"
+            oninput="updateBookCount(this.value)">
         </div>
       </div>
       <div class="row mt-4">
+        <div>
+          <a class="btn bg-light border border-dark rounded mt-2 boton" href="{% url 'recommend' count=5 %}"
+            id="recommend-link">
+            Obtener recomendaciones
+          </a>
+        </div>
+      </div>
+      <!-- <div class="row mt-4">
         <div>
           <a class="btn bg-light border border-dark rounded mt-2 boton" href="{% url 'profile' %}">
             Mostrar libros leídos
           </a>
         </div>
-      </div>
+      </div> -->
       <div class="row mt-4">
         <div>
           <a class="btn bg-light border border-dark rounded mt-2 boton" href="{% url 'discover' %}">
@@ -58,10 +69,24 @@ XBRecs
         </div>
     </div> -->
     {% else %}
-    <a href="{% url 'signup' %}" class="btn btn-primary">
-      ¿Quieres descubrir nuevos libros? Regístrate aquí.
-    </a>
+    <div class="container mt-4 text-center">
+      <a href="{% url 'signup' %}" class="btn btn-primary">
+        ¿Quieres descubrir nuevos libros? Regístrate aquí.
+      </a>
+    </div>
     {% endif %}
   </div>
 </div>
+<script>
+  function updateBookCount(value) {
+    document.getElementById('book-count').textContent = value;
+    document.getElementById('recommend-link').href = "{% url 'recommend' count=5 %}".replace('5', value);
+  }
+</script>
 {% endblock %}
+
+<div class="ml-2">
+  <label for="book-slider">Recomendaciones: <span id="book-count">5</span></label>
+  <input type="range" min="1" max="15" value="5" class="slider" id="book-slider" oninput="updateBookCount(this.value)"
+    style="width: 15%;">
+</div>

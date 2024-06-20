@@ -20,14 +20,17 @@ Recomendaciones
         </div>
         <!-- <div class="list-group" id="book-list"> -->
             {% for book in rec_books %}
-            <div href="#" class="list-group">
+            <div class="list-group">
                 <div class="d-flex justify-content-center list-group-item list-group-item-action">
                     <h6 class="mb-1">{{ forloop.counter }}.- {{ book.title }}</h6>
                 </div>
                 <div class="d-flex justify-content-between list-group-item">
                     <div class="book-cover-container">
-                        <img src="{{ book.cover }}" alt="{{ book.title }}" class="book-cover">
+                        <a href="{% url 'book-detail' book_id=book.id %}">
+                            <img src="{{ book.cover }}" alt="{{ book.title }}" class="book-cover">
+                        </a>
                     </div>
+                    <div class="d-flex justify-content-center align-items-center"></div>
                     <div class="book-info">
                         <p class="mb-1"><b>Autor: </b> {{ book.authors.all.0.name }}</p>
                         <p class="mb-1"><b>Año de publicación:</b> {{ book.year }}</p>
