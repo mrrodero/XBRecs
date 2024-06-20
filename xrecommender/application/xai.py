@@ -162,30 +162,30 @@ def _pyvis_graph(
 
     # Añadir nodos de palabras clave
     keyword_names = [kw.word for kw in keywords]
+    keyword_ids = ["keyword_" + kw_name for kw_name in keyword_names]
     net.add_nodes(
-        keyword_names,
+        keyword_ids,
         label=keyword_names,
         title=keyword_names,
         shape=['ellipse' for _ in keyword_names],
     )
     # Añadir aristas entre libros y palabras clave
-    net.add_edges(
-        [
-            (kw.word, book.id)
-            for kw, books in kw_dict.items()
-            for book in books
-        ]
-    )
+    edges = [
+        ("keyword_" + kw.word, book.id)
+        for kw, books in kw_dict.items()
+        for book in books
+    ]
+    net.add_edges(edges)
     # Cambiar tamaño y color de los nodos de palabras clave
     neighbor_map = net.get_adj_list()
     i = 0
     for kw in kw_dict:
-        font = RADIUS_MULT * len(neighbor_map[kw.word])
+        font = RADIUS_MULT * len(neighbor_map["keyword_" + kw.word])
         if font < FONT_MIN:
             font = FONT_MIN
         elif font > FONT_MAX:
             font = FONT_MAX
-        node = net.get_node(kw.word)
+        node = net.get_node("keyword_" + kw.word)
         node['font'] = {"size": font, "face": FONT_FACE}
         node['color'] = _generate_random_color(i)
         i += 1
@@ -197,6 +197,8 @@ def pyvis_graph_html(
     user: User,
     rec_books: List[Book],
     kw_dict: Dict[Keyword, List[Book]]
+
+
 ) -> str:
     """
     Método para generar un grafo con la librería pyVis y

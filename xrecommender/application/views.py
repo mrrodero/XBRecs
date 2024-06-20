@@ -157,6 +157,15 @@ class BookDetailView(LoginRequiredMixin, generic.DetailView):
         context = super().get_context_data(**kwargs)
         book = self.get_object()
         context['book'] = book
+        # Número de estrellas dada al libro por el usuario
+        user = self.request.user
+        # Comprobar si el usuario ha valorado el libro
+        context['user_rating'] = 0
+        try:
+            rating = Rating.objects.get(user=user, book=book)
+            context['user_rating'] = int(rating.rating * 4 + 1)
+        except Rating.DoesNotExist:
+            pass
         return context
 
 
@@ -174,6 +183,11 @@ class ProfileView(LoginRequiredMixin, generic.TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         context['books'] = user.get_read_books()
+        # Obtener las valoraciones de cada libro
+        context['user_ratings'] = {}
+        for book in context['books']:
+            rating = Rating.objects.get(user=user, book=book)
+            context['user_ratings'][book.id] = int(rating.rating * 4 + 1)
         return context
 
 
@@ -190,8 +204,14 @@ class RecommendView(LoginRequiredMixin, generic.TemplateView):
         """
         context = super().get_context_data(**kwargs)
         user = self.request.user
+        # Obtener parámetro count de la petición
+        count = self.kwargs.get('count', 5)
+        try:
+            count = int(count)
+        except ValueError:
+            count = 5
         # Mostrar recomendaciones
-        rec_books = [b for b, _ in recommend_books(user)]
+        rec_books = [b for b, _ in recommend_books(user, k=count)]
         explain_info_dict = xai_explanation_dict(user, rec_books)
         sorted_rec_books = sort_rec_books_by_keyword_count(
             explain_info_dict, rec_books

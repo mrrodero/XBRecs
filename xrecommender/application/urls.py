@@ -10,12 +10,12 @@ urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('search/', BookSearchView.as_view(), name='search'),
     path('discover/', DiscoverView.as_view(), name='discover'),
-    path('discover/book-rate/<int:book_id>/', book_rate, name='book-rate'),
+    path('book-rate/<int:book_id>/', book_rate, name='book-rate'),
     path(
         'book-detail/<int:book_id>/',
         BookDetailView.as_view(),
         name='book-detail'
     ),
-    path('recommend/', RecommendView.as_view(), name='recommend'),
+    path('recommend/<int:count>', RecommendView.as_view(), name='recommend'),
     path('profile/', ProfileView.as_view(), name='profile'),
 ]
