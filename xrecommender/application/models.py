@@ -201,7 +201,8 @@ class Rating(models.Model):
 @receiver([post_save, post_delete], sender=Rating)
 def update_user_embedding(sender, instance: Rating, **kwargs) -> None:
     """
-    Actualiza el embedding del usuario tras añadir o eliminar una valoración.
+    Actualiza el embedding del usuario tras añadir, eliminar o
+    actualizar una valoración.
 
     ## Argumentos:
     - `sender`: Modelo que envía la señal.
@@ -214,7 +215,7 @@ def update_user_embedding(sender, instance: Rating, **kwargs) -> None:
     new_sum_ratings = user.sum_ratings
     if kwargs['signal'] == post_save:
         new_sum_ratings += rating
-    else:
+    elif kwargs['signal'] == post_delete:
         new_sum_ratings -= rating
 
     user.sum_ratings = new_sum_ratings
@@ -229,8 +230,11 @@ def update_user_embedding(sender, instance: Rating, **kwargs) -> None:
     new_user_embedding = user.get_embedding()
     if kwargs['signal'] == post_save:
         new_user_embedding += rating * book_embedding
-    else:
+    elif kwargs['signal'] == post_delete:
         new_user_embedding -= rating * book_embedding
+    elif kwargs['signal'] == post_save and instance.rating != rating:
+        new_user_embedding -= instance.rating * book_embedding
+        new_user_embedding += rating * book_embedding
 
     # Suma ponderada de las valoraciones
     if new_sum_ratings != 0.0:
