@@ -5,45 +5,55 @@ Mi perfil
 {% endblock %}
 
 {% block content %}
-<div class="row" style="margin-left: 30px;">
-  <div class="col-md-6 mb-4">
-    <h2 class="align-center">Libros leídos</h2>
-    <a href="{% url 'discover' %}" class="btn btn-outline-success ml-2" style="width: 150px; height: auto;">Añadir
-      lectura</a>
-  </div>
-</div>
-<div class="row" style="margin-left: 30px;">
-  {% for book in books %}
-  <!-- <div class="d-flex justify-content-left align-items-center" style="margin-left: 20px;">
-      <a href="{% url 'book-detail' book_id=book.id %}" class="nav-link text-secondary">{{ book.title }}</a>
-    </div> -->
-  <div class="col-md-6 mb-4">
-    <div class="d-flex align-items-center">
-      <div class="book-cover-container mr-3">
-        <a href="{% url 'book-detail' book_id=book.id %}">
-          <img src="{{ book.cover }}" alt="{{ book.title }}" class="book-cover">
-        </a>
+<div class="main-container" style="margin-right: 20px;">
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="text-align-center">
+        <h3 class="text-info">Libros leídos</h3>
       </div>
-      <div style="margin-left: 20px;">
-        <a href="{% url 'book-detail' book_id=book.id %}" class="nav-link text-secondary">
-          <h4>{{ book.title }}</h4>
-        </a>
-        {% load dict_filter %}
-        <div class="rating" id="{{ book.id }}">
-          <div class="rating-stars">
-            {% for i in "12345" %}
-              {% if forloop.counter <= user_ratings|get_item:book.id %}
-                <i class="fas fa-star star" data-index="{{ forloop.counter }}"></i>
-              {% else %}
-                <i class="far fa-star star" data-index="{{ forloop.counter }}"></i>
-              {% endif %}
-            {% endfor %}
+      <a href="{% url 'discover' %}" class="btn btn-outline-success ml-4" style="width: 150px; height: auto;">Añadir
+        lectura
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    {% for book in books %}
+    <!-- <div class="d-flex justify-content-left align-items-center" style="margin-left: 20px;">
+        <a href="{% url 'book-detail' book_id=book.id %}" class="nav-link text-secondary">{{ book.title }}</a>
+      </div> -->
+    <div class="col-md-6 mb-4" id="book-entry-{{ book.id }}">
+      <div class="d-flex align-items-center">
+        <div class="book-cover-container mr-3">
+          <a href="{% url 'book-detail' book_id=book.id %}">
+            <img src="{{ book.cover }}" alt="{{ book.title }}" class="book-cover">
+          </a>
+        </div>
+        <div style="margin-left: 20px;">
+          <a href="{% url 'book-detail' book_id=book.id %}" class="nav-link text-secondary">
+            <h4>{{ book.title }}</h4>
+          </a>
+          {% load dict_filter %}
+          <div class="rating" id="{{ book.id }}">
+            <div class="rating-container">
+              <div class="rating-stars">
+                {% for i in "12345" %}
+                {% if forloop.counter <= user_ratings|get_item:book.id %} <i class="fas fa-star star"
+                  data-index="{{ forloop.counter }}"></i>
+                  {% else %}
+                  <i class="far fa-star star" data-index="{{ forloop.counter }}"></i>
+                  {% endif %}
+                  {% endfor %}
+              </div>
+              <div class="bin-icon" style="margin-left: 10px;">
+                <i class="fas fa-trash lid bin-icon-hover"></i>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    {% endfor %}
   </div>
-  {% endfor %}
 </div>
 <script>
   $(document).ready(function () {
@@ -69,6 +79,28 @@ Mi perfil
         },
         success: function (response) {
           console.log(response.message);
+        },
+        error: function (xhr, status, error) {
+          console.error(xhr.responseText);
+        }
+      });
+    });
+
+    // Handle trash icon click
+    $('.bin-icon').click(function () {
+      var bookId = $(this).closest('.rating').attr('id');
+
+      // AJAX to delete the rating
+      $.ajax({
+        method: 'POST',
+        url: '/application/book-rate-remove/' + bookId + '/',
+        data: {
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+        },
+        success: function (response) {
+          console.log(response.message);
+          // Remove the whole book entry
+          $('#book-entry-' + bookId).remove();
         },
         error: function (xhr, status, error) {
           console.error(xhr.responseText);

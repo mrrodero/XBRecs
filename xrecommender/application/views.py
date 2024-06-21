@@ -141,6 +141,36 @@ def book_rate(request, book_id):
     return JsonResponse({'error': 'Invalid request.'}, status=400)
 
 
+@require_POST
+def book_rate_remove(request, book_id):
+    """
+    Vista para eliminar la calificación de un libro.
+
+    ## Argumentos:
+    - `request`: Petición HTTP.
+    - `book_id`: ID del libro.
+
+    ## Retorna:
+    - `JsonResponse`: Respuesta JSON.
+    """
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        book = get_object_or_404(Book, id=book_id)
+        user = request.user
+
+        # Comprobar si existe la valoración y eliminarla
+        try:
+            rating = Rating.objects.get(user=user, book=book)
+            rating.delete()
+        except Rating.DoesNotExist:
+            return JsonResponse(
+                {'error': 'No se ha encontrado la valoración.'}
+            )
+
+        return JsonResponse({'message': 'Valoración eliminada.'})
+
+    return JsonResponse({'error': 'Invalid request.'}, status=400)
+
+
 class BookDetailView(LoginRequiredMixin, generic.DetailView):
     """Vista basada en clase para mostrar el detalle de un libro."""
 

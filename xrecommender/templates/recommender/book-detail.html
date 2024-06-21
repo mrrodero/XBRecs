@@ -15,12 +15,17 @@
             <img src="{{ book.cover }}" alt="{{ book.title }}"
                 style="margin-top: 14px; margin-left: 10px; width: 150px; height: auto;">
             <div class="rating" id="{{ book.id }}" style="margin-top: 10px;">
-                <div class="rating-stars">
-                    <i class="far fa-star star" data-index="1"></i>
-                    <i class="far fa-star star" data-index="2"></i>
-                    <i class="far fa-star star" data-index="3"></i>
-                    <i class="far fa-star star" data-index="4"></i>
-                    <i class="far fa-star star" data-index="5"></i>
+                <div class="rating-container">
+                    <div class="rating-stars">
+                        <i class="far fa-star star" data-index="1"></i>
+                        <i class="far fa-star star" data-index="2"></i>
+                        <i class="far fa-star star" data-index="3"></i>
+                        <i class="far fa-star star" data-index="4"></i>
+                        <i class="far fa-star star" data-index="5"></i>
+                    </div>
+                    <div class="bin-icon" style="margin-left: 10px;">
+                        <i class="fas fa-trash lid bin-icon-hover"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -35,16 +40,23 @@
 
 <script>
     $(document).ready(function () {
+        // Hide by default the trash icon
+        $('.bin-icon').hide();
+
         // Fill by default the stars that the user has already rated
         var userRating = "{{ user_rating }}";
+        // Convert the string to an integer
+        userRating = parseInt(userRating);
         if (userRating) {
             $('.rating-stars .star').each(function (index) {
                 if (index < userRating) {
                     $(this).removeClass('far').addClass('fas');
                 }
             });
+            // Show the trash icon
+            $('.bin-icon').show();
         }
-        
+
         // Handle star rating click
         $('.rating-stars .star').click(function () {
             var index = $(this).data('index');
@@ -66,6 +78,32 @@
                 },
                 success: function (response) {
                     console.log(response.message);
+                    // Show the trash icon
+                    $('.bin-icon').show();
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+
+        // Handle trash icon click
+        $('.bin-icon').click(function () {
+            var bookId = $(this).closest('.rating').attr('id');
+
+            // AJAX to delete the rating
+            $.ajax({
+                method: 'POST',
+                url: '/application/book-rate-remove/' + bookId + '/',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                success: function (response) {
+                    console.log(response.message);
+                    // Hide the trash icon
+                    $('.bin-icon').hide();
+                    // Remove the rating
+                    $('.rating-stars .star').removeClass('fas').addClass('far');
                 },
                 error: function (xhr, status, error) {
                     console.error(xhr.responseText);

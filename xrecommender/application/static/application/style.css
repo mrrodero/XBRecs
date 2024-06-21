@@ -25,16 +25,28 @@ footer {
     color: gray;
 }
 
-.container-logo {
-    max-width: 55vh;
-    min-width: 300px;
+.container-logo img {
+    max-width: 100%;
+    min-width: 350px;
+    /* Ensures the image is not wider than its container */
+    height: auto;
+    /* Scales the image height to maintain its aspect ratio */
+    object-fit: contain;
+    /* Ensures the image fits within its box, maintaining aspect ratio */
 }
 
+/* .container {
+    display: flex;
+    height: 100%;
+} */
 .left {
     width: 50%;
     background-color: #f0f0f0;
+    /* Light gray background */
     border-right: 2px solid #ccc;
+    /* Border between left and right sections */
     box-sizing: border-box;
+    /* Ensure border width is included in the width calculation */
 }
 
 .right {
@@ -47,8 +59,11 @@ footer {
 .lower-right {
     height: 50%;
     background-color: #d0d0d0;
+    /* Medium gray background */
     border-bottom: 2px solid #ccc;
+    /* Border between upper and lower sections */
     box-sizing: border-box;
+    /* Ensure border width is included in the height calculation */
 }
 
 img {
@@ -64,36 +79,6 @@ img {
     width: 40vh;
 }
 
-.lista-cuestionarios {
-    max-height: 40vh;
-}
-
-@media screen and (orientation: landscape) {
-    .ques-list {
-        max-height: 60vh;
-        width: 75%;
-    }
-
-    .question-button {
-        width: 30%;
-    }
-}
-
-@media screen and (orientation: portrait) {
-    .ques-list {
-        max-height: 60vh;
-        width: 90%;
-    }
-
-    .question-button {
-        width: 100%;
-    }
-}
-
-.question-list {
-    height: 35vh;
-}
-
 .check {
     fill: green;
 }
@@ -103,6 +88,7 @@ img {
 }
 
 .fondo {
+    /* background-image: url("img/fondo.jpg"); */
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -118,22 +104,6 @@ img {
     height: 60vh;
 }
 
-#participants {
-    height: 35vh;
-    overflow: auto;
-    margin: auto;
-}
-
-.participante {
-    display: inline;
-    width: 100px;
-}
-
-.respuesta {
-    font-size: min(max(16px, 3.5vw), 22px);
-    height: 27vh;
-}
-
 .editar {
     background-color: #58E8CD;
 }
@@ -144,42 +114,73 @@ img {
 
 #graph-container {
     padding: 20px;
+    /* Optional: Add padding for space around the graph */
     margin-bottom: 20px;
+    /* Optional: Add margin to separate from the book list */
     height: 100%;
+    /* Fill the height of the container */
 }
 
 .book-cover-container {
-    width: 120px;
-    height: 180px;
+    width: 72px;
+    /* Set width for the book cover container */
+    height: 110px;
+    /* Set height for the book cover container */
     overflow: hidden;
-    border-radius: 10px;
+    border-bottom-right-radius: 5px;
+    /* Rounded corners for the book cover */
+    border-top-right-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease;
+    /* Smooth transition for scaling */
 }
 
 .book-cover {
     width: 100%;
+    /* Set book cover width to fill container */
     height: 100%;
-    object-fit: cover;
+    /* Set book cover height to fill container */
     transition: transform 0.3s ease;
+    /* Smooth transition for scaling */
 }
 
-.book-cover-container:hover .book-cover {
+.main-container {
+    border: 1px solid #ddd;
+    /* Optional: Add border for better separation */
+    border-radius: 4px;
+    /* Optional: Add border radius for rounded corners */
+    padding: 25px;
+    /* Optional: Add padding for space around the graph */
+    margin-bottom: 100px;
+    /* Optional: Add margin to separate from the book list */
+    padding-bottom: 40px;
+    margin-left: 20px;
+    margin-right: 0px;
+}
+
+.book-cover-container:hover {
     transform: scale(1.06);
+    /* Scale up on hover */
 }
 
 .book-info {
     margin-top: 0.5rem;
     margin-left: 10px;
     padding-left: 10px;
+    /* Add space between book cover and title */
 }
 
 #book-list {
     display: flex;
+    /* Display books in a row */
     flex-wrap: wrap;
+    /* Wrap books to the next row */
     justify-content: space-between;
+    /* Space between books */
     padding: 0;
+    /* Remove default padding */
     list-style: none;
+    /* Remove default list style */
     margin-right: 20px;
 }
 
@@ -189,6 +190,7 @@ img {
 
 .form-inputs input[type="text"] {
     padding-right: 40px;
+    /* Make space for the search icon */
 }
 
 .form-inputs .fa-search {
@@ -198,15 +200,18 @@ img {
     transform: translateY(-50%);
     color: #aaa;
     pointer-events: none;
+    /* Ensure the icon does not block input field clicks */
 }
 
 .form-inline .btn {
     margin-left: 20px;
+    /* Add some space between the input and the button */
 }
 
 @media (max-width: 576px) {
     .form-inline input[type="search"] {
         width: calc(100% - 60px);
+        /* Adjust the width for smaller screens */
     }
 }
 
@@ -214,13 +219,19 @@ img {
     margin-top: 0.5rem;
 }
 
+.rating-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
 .rating-stars {
     display: flex;
 }
 
 .rating-stars .star {
-    font-size: 24px;
-    color: #ddd;
+    font-size: 20px;
+    color: #a7a1a1;
     cursor: pointer;
     transition: color 0.2s;
 }
@@ -228,7 +239,31 @@ img {
 .rating-stars .star:hover,
 .rating-stars .star.hovered,
 .rating-stars .star.selected {
-    color: yellow;
+    color: #ffc107;
+    /* Yellow color for hovered and selected stars */
+}
+
+.rating-container .bin-icon {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.rating-container .bin-icon i {
+    transition: transform 0.5s ease;
+}
+
+.rating-container .bin-icon:hover i {
+    transform: rotate(-25deg);
+    /* Simulates the bin opening */
+}
+
+.bin-icon-hover {
+    color: #a7a1a1;
+}
+
+.bin-icon-hover:hover {
+    color: tomato;
 }
 
 img {
