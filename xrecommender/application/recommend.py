@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
 from typing import Dict, List, Tuple
 
 from .models import User, Book, Rating, LIKES
@@ -19,15 +20,16 @@ def k_nearest(user: User, k: int) -> List[Tuple[User, float]]:
     - k tuplas (`User`, similitud) con los `k` usuarios más próximos
     al usuario.
     """
+    # Embedding del usuario
+    user_embedding = user.get_embedding().reshape(1, -1)
     # Obtenemos todos los usuarios menos el usuario actual
     users = User.objects.exclude(id=user.id)
-    # Calculamos las distancias entre el usuario y todos los demás
-    user_embedding = user.get_embedding()
-    # Similitud (coseno) entre el usuario y todos los demás
-    users_sim = [
-        (u, float(np.dot(user_embedding, u.get_embedding())))
-        for u in users
-    ]
+    users_embeddings = np.array([u.get_embedding() for u in users])
+    # Similitudes (coseno) entre el usuario y todos los demás
+    similarities = cosine_similarity(
+        user_embedding, users_embeddings
+    ).flatten()
+    users_sim = list(zip(users, similarities))
     # Obtenemos los k vecinos más próximos
     users_sim.sort(key=lambda x: x[1], reverse=True)
     return users_sim[:k]

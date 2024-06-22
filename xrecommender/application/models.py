@@ -3,7 +3,7 @@ import pickle
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
 
 LIKES = 0.75
@@ -198,52 +198,124 @@ class Rating(models.Model):
         return f'{self.user} - {self.book} - {self.rating}'
 
 
-@receiver([post_save, post_delete], sender=Rating)
-def update_user_embedding(sender, instance: Rating, **kwargs) -> None:
+@receiver([pre_save], sender=Rating)
+def capture_previous_rating(sender, instance: Rating, **kwargs) -> None:
     """
-    Actualiza el embedding del usuario tras añadir, eliminar o
-    actualizar una valoración.
+    Captura la valoración anterior del usuario para un libro.
 
     ## Argumentos:
     - `sender`: Modelo que envía la señal.
     - `instance`: Instancia de la señal.
     - `kwargs`: Argumentos adicionales.
     """
-    # Actualización de la suma de las valoraciones
+    global previous_rating_value
+    # Acceder a la valoración anterior
+    if instance.pk:
+        previous_rating = Rating.objects.filter(
+            user=instance.user, book=instance.book
+        ).first().rating
+        # Guardar la valoración anterior
+        previous_rating_value = previous_rating
+
+
+@receiver([post_save], sender=Rating)
+def update_user_embedding_after_new_rating(
+    sender, instance: Rating, created: bool, **kwargs
+) -> None:
+    """
+    Actualiza el embedding del usuario tras añadir o
+    actualizar una valoración.
+
+    ## Argumentos:
+    - `sender`: Modelo que envía la señal.
+    - `instance`: Instancia de la señal.
+    - `created`: Indica si la señal es por una nueva creación.
+    - `kwargs`: Argumentos adicionales.
+    """
+    global previous_rating_value
+    # Datos de usuario y valoración
     user = instance.user
-    rating = instance.rating
+    new_user_embedding = user.sum_ratings * user.get_embedding()
     new_sum_ratings = user.sum_ratings
-    if kwargs['signal'] == post_save:
-        new_sum_ratings += rating
-    elif kwargs['signal'] == post_delete:
-        new_sum_ratings -= rating
-
-    user.sum_ratings = new_sum_ratings
-    user.save()
-
-    # Si la valoración es negativa, no se actualiza el embedding
-    if rating < LIKES:
-        return
-
-    # Actualización del embedding
+    new_rating_value = instance.rating
     book_embedding = instance.book.get_embedding()
-    new_user_embedding = user.get_embedding()
-    if kwargs['signal'] == post_save:
-        new_user_embedding += rating * book_embedding
-    elif kwargs['signal'] == post_delete:
-        new_user_embedding -= rating * book_embedding
-    elif kwargs['signal'] == post_save and instance.rating != rating:
-        new_user_embedding -= instance.rating * book_embedding
-        new_user_embedding += rating * book_embedding
+    # Caso en el que se añade una valoración por primera vez
+    if created:
+        print("Trigger para añadir valoración")
+        print(f"Nuevo rating: {new_rating_value}")
+        if new_rating_value < LIKES:
+            print("Valoración negativa, no se actualiza embedding")
+            return
+        new_sum_ratings += new_rating_value
+        new_user_embedding += new_rating_value * book_embedding
+    # Caso en el que se actualiza la valoración
+    else:
+        print("Trigger para actualizar valoración")
+        print(f"Rating anterior: {previous_rating_value}")
+        print(f"Nuevo rating: {new_rating_value}")
+        if previous_rating_value < LIKES and new_rating_value < LIKES:
+            print(
+                "Ambas valoraciones son negativas, no se actualiza embedding"
+            )
+            return
+        elif previous_rating_value < LIKES and new_rating_value >= LIKES:
+            print("Valoración anterior negativa, nueva positiva")
+            new_sum_ratings += new_rating_value
+            new_user_embedding += new_rating_value * book_embedding
+        elif previous_rating_value >= LIKES and new_rating_value < LIKES:
+            print("Valoración anterior positiva, nueva negativa")
+            new_sum_ratings -= previous_rating_value
+            new_user_embedding -= previous_rating_value * book_embedding
+        elif previous_rating_value >= LIKES and new_rating_value >= LIKES:
+            print("Ambas valoraciones son positivas")
+            new_sum_ratings -= previous_rating_value
+            new_sum_ratings += new_rating_value
+            new_user_embedding -= previous_rating_value * book_embedding
+            new_user_embedding += new_rating_value * book_embedding
 
     # Suma ponderada de las valoraciones
     if new_sum_ratings != 0.0:
         new_user_embedding /= new_sum_ratings
 
-    # Normalización del embedding
-    norm = np.linalg.norm(new_user_embedding)
-    if norm != 0.0:
-        new_user_embedding /= norm
+    # Se actualizan los datos del usuario
+    user.sum_ratings = new_sum_ratings
+    user.set_embedding(new_user_embedding)
+    user.save()
 
+
+@receiver([post_delete], sender=Rating)
+def update_user_embedding_after_delete_rating(
+    sender, instance: Rating, **kwargs
+) -> None:
+    """
+    Actualiza el embedding del usuario tras eliminar una valoración.
+
+    ## Argumentos:
+    - `sender`: Modelo que envía la señal.
+    - `instance`: Instancia de la señal.
+    - `kwargs`: Argumentos adicionales.
+    """
+    print("Trigger para eliminar valoración")
+    deleted_rating_value = instance.rating
+    if deleted_rating_value < LIKES:
+        print("Valoración negativa, no se actualiza embedding")
+        return
+
+    # Datos de usuario y valoración
+    user = instance.user
+    new_user_embedding = user.sum_ratings * user.get_embedding()
+    new_sum_ratings = user.sum_ratings
+    book_embedding = instance.book.get_embedding()
+
+    # Recálculo de la suma de las valoraciones y del embedding
+    new_sum_ratings -= deleted_rating_value
+    new_user_embedding -= deleted_rating_value * book_embedding
+
+    # Suma ponderada de las valoraciones
+    if new_sum_ratings != 0.0:
+        new_user_embedding /= new_sum_ratings
+
+    # Se actualizan los datos del usuario
+    user.sum_ratings = new_sum_ratings
     user.set_embedding(new_user_embedding)
     user.save()
