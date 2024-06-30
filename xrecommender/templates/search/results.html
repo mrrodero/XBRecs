@@ -12,18 +12,6 @@
                 <a href="{% url 'book-detail' book_id=result.object.id %}" class="nav-link text-secondary">
                     <h4>{{ result.object.title }}</h4>
                 </a>
-                <!-- {% load dict_filter %}
-                <div class="rating" id="{{ result.object.id }}">
-                    <div class="rating-stars">
-                        {% for i in "12345" %}
-                            {% if forloop.counter <= user_ratings|get_item:result.object.id %}
-                                <i class="fas fa-star star" data-index="{{ forloop.counter }}"></i>
-                            {% else %}
-                                <i class="far fa-star star" data-index="{{ forloop.counter }}"></i>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </div> -->
             </div>
         </div>
     </div>
@@ -32,35 +20,3 @@
 {% else %}
 <p>No results found.</p>
 {% endif %}
-
-<script>
-    $(document).ready(function () {
-        // Handle star rating click
-        $('.rating-stars .star').click(function () {
-            var index = $(this).data('index');
-            var bookId = $(this).closest('.rating').attr('id');
-
-            // Highlight the selected stars
-            $(this).siblings('.star').removeClass('far').addClass('fas');
-            $(this).prevAll('.star').removeClass('far').addClass('fas');
-            $(this).addClass('fas');
-            $(this).nextAll('.star').removeClass('fas').addClass('far');
-
-            // AJAX to save the rating
-            $.ajax({
-                method: 'POST',
-                url: '/application/book-rate/' + bookId + '/',
-                data: {
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                    rating: index
-                },
-                success: function (response) {
-                    console.log(response.message);
-                },
-                error: function (xhr, status, error) {
-                    console.error(xhr.responseText);
-                }
-            });
-        });
-    });
-</script>

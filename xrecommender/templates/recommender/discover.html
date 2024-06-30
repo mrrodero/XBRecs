@@ -16,21 +16,6 @@ Búsqueda de libros
   </form>
   <div id="search-results" class="mt-4"></div>
 </div>
-
-<script>
-  $('#search-form').on('submit', function (event) {
-    event.preventDefault();
-    var query = $('#search-input').val();
-    $.ajax({
-      url: "{% url 'search' %}",
-      data: {
-        'q': query
-      },
-      success: function (data) {
-        $('#search-results').html(data);
-      }
-    });
-  });
-</script>
-
+{% load static %}
+<script src="{% static 'application/js/discover.js' %}"></script>
 {% endblock %}

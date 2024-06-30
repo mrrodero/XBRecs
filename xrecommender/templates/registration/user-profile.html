@@ -18,9 +18,6 @@ Mi perfil
   </div>
   <div class="row">
     {% for book in books %}
-    <!-- <div class="d-flex justify-content-left align-items-center" style="margin-left: 20px;">
-        <a href="{% url 'book-detail' book_id=book.id %}" class="nav-link text-secondary">{{ book.title }}</a>
-      </div> -->
     <div class="col-md-6 mb-4" id="book-entry-{{ book.id }}">
       <div class="d-flex align-items-center">
         <div class="book-cover-container mr-3">
@@ -55,58 +52,6 @@ Mi perfil
     {% endfor %}
   </div>
 </div>
-<script>
-  $(document).ready(function () {
-    console.log("{{ user_ratings.276 }}")
-    // Handle star rating click
-    $('.rating-stars .star').click(function () {
-      var index = $(this).data('index');
-      var bookId = $(this).closest('.rating').attr('id');
-
-      // Highlight the selected stars
-      $(this).siblings('.star').removeClass('far').addClass('fas');
-      $(this).prevAll('.star').removeClass('far').addClass('fas');
-      $(this).addClass('fas');
-      $(this).nextAll('.star').removeClass('fas').addClass('far');
-
-      // AJAX to save the rating
-      $.ajax({
-        method: 'POST',
-        url: '/application/book-rate/' + bookId + '/',
-        data: {
-          csrfmiddlewaretoken: '{{ csrf_token }}',
-          rating: index
-        },
-        success: function (response) {
-          console.log(response.message);
-        },
-        error: function (xhr, status, error) {
-          console.error(xhr.responseText);
-        }
-      });
-    });
-
-    // Handle trash icon click
-    $('.bin-icon').click(function () {
-      var bookId = $(this).closest('.rating').attr('id');
-
-      // AJAX to delete the rating
-      $.ajax({
-        method: 'POST',
-        url: '/application/book-rate-remove/' + bookId + '/',
-        data: {
-          csrfmiddlewaretoken: '{{ csrf_token }}',
-        },
-        success: function (response) {
-          console.log(response.message);
-          // Remove the whole book entry
-          $('#book-entry-' + bookId).remove();
-        },
-        error: function (xhr, status, error) {
-          console.error(xhr.responseText);
-        }
-      });
-    });
-  });
-</script>
+{% load static %}
+<script src="{% static 'application/js/profile.js' %}"></script>
 {% endblock %}
