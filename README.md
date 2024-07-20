@@ -8,7 +8,7 @@ Para probar el sistema en local, deberás solicitar acceso a la base de datos co
 Una vez tengas acceso, debes seguir estos pasos:
 
 1. Accede a la carpeta **xrecommender**.
-2. Ejecuta, desde la terminal en que vayas a lanzar el servidor, `EXPORT DEBUG=True`.
+2. Ejecuta, desde la terminal en que vayas a lanzar el servidor, `export DEBUG=True`.
 3. Ahora, lanza el sistema con el comando `make runserver`.
 4. ¡Listo! Ya puedes empezar a utilizar el sistema, creando un perfil de usuario y añadiendo libros que hayas leído. Podrás acceder a la recomendación desde la vista principal de la web.
 
