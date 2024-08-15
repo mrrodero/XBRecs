@@ -48,7 +48,7 @@ optree==0.11.0
 packaging==24.0
 parso==0.8.3
 pexpect==4.9.0
-Pillow==9.4.0
+Pillow==10.3.0
 platformdirs==4.2.0
 prompt-toolkit==3.0.43
 protobuf==4.25.3
