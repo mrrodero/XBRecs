@@ -1,7 +1,7 @@
 absl-py==2.0.0
 astunparse==1.6.3
 cachetools==5.3.2
-certifi==2023.11.17
+certifi==2024.7.4
 charset-normalizer==3.3.2
 cloudpickle==3.0.0
 -e git+https://github.com//sisinflab/elliot.git@5d16164772055297b44312698823594c5e259afd#egg=elliot
