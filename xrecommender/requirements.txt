@@ -75,7 +75,7 @@ seaborn==0.13.2
 six==1.15.0
 smart-open==6.4.0
 smmap==5.0.1
-sqlparse==0.4.4
+sqlparse==0.5.0
 stack-data==0.6.3
 sympy==1.12
 text-unidecode==1.2
