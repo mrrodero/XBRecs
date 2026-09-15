@@ -1,50 +1,25 @@
-absl-py==2.0.0
-astunparse==1.6.3
-cachetools==5.3.2
-certifi==2024.7.4
-charset-normalizer==3.3.2
-cloudpickle==3.0.0
--e git+https://github.com//sisinflab/elliot.git@5d16164772055297b44312698823594c5e259afd#egg=elliot
-future==0.18.3
-gast==0.3.3
-google-auth==2.24.0
-google-auth-oauthlib==1.0.0
-google-pasta==0.2.0
-grpcio==1.59.3
-h5py==2.10.0
+# Elliot — framework de evaluación de sistemas recomendadores.
+#
+# IMPORTANTE: Elliot NO está publicado en PyPI y su `setup.py` fija
+# dependencias obsoletas (tensorflow==2.3.2, numpy==1.18, ...). Por eso
+# se instala SIN sus dependencias y se fijan aquí las dependencias reales
+# de runtime (el modelo `ProxyRecommender`, usado en
+# `experiment_config.yml`, no necesita TensorFlow).
+#
+# Instalación:
+#   pip install --no-deps -e "git+https://github.com/sisinflab/elliot.git@fc27efedaddf4a57294db14b4bcaa5553a0015d2#egg=elliot"
+#   pip install -r elliot/requirements.txt
+#
+# El commit fijado (fc27efe, 2025-12-14) es el último de la rama `master`.
+
+-e git+https://github.com/sisinflab/elliot.git@fc27efedaddf4a57294db14b4bcaa5553a0015d2#egg=elliot
+
+# Dependencias de runtime (compatibles con el resto del proyecto).
 hyperopt==0.2.5
-idna==3.7
-importlib-metadata==6.9.0
-joblib==1.3.2
-Keras-Preprocessing==1.1.2
-Markdown==3.8.1
-MarkupSafe==2.1.3
-networkx==3.1
-numpy==1.22.0
-oauthlib==3.2.2
-opt-einsum==3.3.0
-pandas==1.1.5
-Pillow==12.1.1
-protobuf==5.29.6
-pyasn1==0.6.3
-pyasn1-modules==0.3.0
-python-dateutil==2.8.2
-pytz==2023.3.post1
-PyYAML==5.4.1
-requests==2.33.0
-requests-oauthlib==1.3.1
-rsa==4.9
-scikit-learn==1.5.0
-scipy==1.4.1
-six==1.16.0
-tensorboard==2.14.0
-tensorboard-data-server==0.7.2
-tensorflow==2.12.1
-tensorflow-estimator==2.3.0
-termcolor==2.4.0
-threadpoolctl==3.2.0
-tqdm==4.66.3
-urllib3==2.6.3
-Werkzeug==3.1.6
-wrapt==1.16.0
-zipp==3.19.1
+numpy==2.5.3
+pandas==2.3.3
+scipy==1.18.1
+scikit-learn==1.9.1
+tqdm==4.70.1
+PyYAML==6.0.3
+Pillow==12.3.0

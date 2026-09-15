@@ -1,22 +1,43 @@
-{% if book_results %}
-<div class="row">
-    {% for result in book_results %}
-    <div class="col-md-6 mb-4">
-        <div class="d-flex align-items-center">
-            <div class="book-cover-container mr-3">
-                <a href="{% url 'book-detail' book_id=result.object.id %}">
-                    <img src="{{ result.object.cover }}" alt="{{ result.object.title }}" class="book-cover">
-                </a>
-            </div>
-            <div style="margin-left: 20px;">
-                <a href="{% url 'book-detail' book_id=result.object.id %}" class="nav-link text-secondary">
-                    <h4>{{ result.object.title }}</h4>
-                </a>
+{% extends "base_generic.html" %}
+
+{% block title %}
+Búsqueda: {{ query }}
+{% endblock %}
+
+{% block content %}
+<div class="overflow-auto main-container" style="margin-right: 20px;">
+    <h3 class="text-info">
+        Resultados para «{{ query }}»
+        ({{ page_obj.paginator.count }})
+    </h3>
+    <div class="row">
+        {% for book in results %}
+        <div class="col-md-6 mb-4">
+            <div class="d-flex align-items-center">
+                <div class="book-cover-container mr-3">
+                    <a href="{% url 'book-detail' book_id=book.id %}">
+                        <img src="{{ book.cover }}" alt="{{ book.title }}" class="book-cover">
+                    </a>
+                </div>
+                <div style="margin-left: 20px;">
+                    <a href="{% url 'book-detail' book_id=book.id %}" class="nav-link text-secondary">
+                        <h4>{{ book.title }}</h4>
+                    </a>
+                    <p class="text-muted mb-1">
+                        {{ book.authors.all.0.name }} · {{ book.year }}
+                    </p>
+                    {% if book.search_headline %}
+                    <p class="mb-1" style="max-height: 60px; overflow: hidden;">
+                        {{ book.search_headline|safe }}
+                    </p>
+                    {% endif %}
+                </div>
             </div>
         </div>
+        {% empty %}
+        <p>No se han encontrado libros para «{{ query }}».</p>
+        {% endfor %}
     </div>
-    {% endfor %}
+    {% include "includes/pagination.html" %}
 </div>
-{% else %}
-<p>No results found.</p>
-{% endif %}
+{% endblock %}

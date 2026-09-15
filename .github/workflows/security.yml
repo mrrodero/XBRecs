@@ -1,0 +1,28 @@
+name: security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Auditoría semanal de dependencias.
+    - cron: "0 6 * * 1"
+
+jobs:
+  pip-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Instalar pip-audit
+        run: python -m pip install pip-audit
+
+      - name: Auditar dependencias de la aplicación
+        run: pip-audit -r xrecommender/requirements.txt --strict
+
+      - name: Auditar dependencias de desarrollo
+        run: pip-audit -r xrecommender/requirements-dev.txt --strict

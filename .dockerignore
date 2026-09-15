@@ -1,0 +1,23 @@
+# Lo que NO debe copiarse a la imagen.
+.git
+.dev
+.venv
+venv
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+pytest-cache-files-*
+node_modules
+
+# Datos grandes (no se necesitan en runtime; se cargan con `populate`).
+datasets
+models
+predictions
+elliot
+notebooks
+docs
+
+# Entornos y secretos.
+.env
+.env.*

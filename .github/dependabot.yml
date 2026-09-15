@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pip"
+    directory: "/xrecommender"
+    schedule:
+      interval: "weekly"
+    versioning-strategy: "lockfile-only"
+
+  - package-ecosystem: "pip"
+    directory: "/elliot"
+    schedule:
+      interval: "weekly"
+    versioning-strategy: "lockfile-only"

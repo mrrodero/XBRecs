@@ -1,0 +1,55 @@
+# Stack de XBRecs: aplicación Django + PostgreSQL con pgvector.
+#
+# Uso:
+#   export SECRET_KEY=$(python -c "import secrets; print(secrets.token_urlsafe(50))")
+#   docker compose up --build
+#
+# La app queda en http://localhost:8000.
+
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: xrecommender
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d xrecommender"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  web:
+    build: .
+    command:
+      [
+        "sh",
+        "/app/docker-entrypoint.sh",
+        "gunicorn",
+        "xrecommender.wsgi:application",
+        "--bind",
+        "0.0.0.0:8000",
+        "--workers",
+        "3",
+        "--timeout",
+        "120",
+      ]
+    environment:
+      DEBUG: ${DEBUG:-0}
+      SECRET_KEY: ${SECRET_KEY:?Define SECRET_KEY en el entorno o en un archivo .env}
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-postgres}@db:5432/xrecommender
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
+      RENDER_EXTERNAL_HOSTNAME: ${RENDER_EXTERNAL_HOSTNAME:-localhost:8000}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_API_BASE: ${LLM_API_BASE:-https://api.openai.com/v1}
+      LLM_MODEL: ${LLM_MODEL:-gpt-4o-mini}
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

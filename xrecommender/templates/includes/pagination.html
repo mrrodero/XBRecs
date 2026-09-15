@@ -1,0 +1,42 @@
+{#
+    Controles de paginación.
+
+    Variables esperadas:
+    - `page_obj`: objeto de página de Django.
+    - `q` (opcional): término de búsqueda a preservar en la URL.
+#}
+{% if page_obj.paginator.num_pages > 1 %}
+<nav aria-label="Paginación">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link"
+               href="?{% if q %}q={{ q|urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}">
+                &laquo; Anterior
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">&laquo; Anterior</span>
+        </li>
+        {% endif %}
+        <li class="page-item disabled">
+            <span class="page-link">
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+            </span>
+        </li>
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link"
+               href="?{% if q %}q={{ q|urlencode }}&{% endif %}page={{ page_obj.next_page_number }}">
+                Siguiente &raquo;
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">Siguiente &raquo;</span>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}

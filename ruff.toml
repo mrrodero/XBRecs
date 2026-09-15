@@ -1,0 +1,6 @@
+# Configuración de ruff para el proyecto.
+
+[lint]
+# RUF012: Django usa `Meta.constraints = [...]` / `Meta.indexes = [...]`
+# como patrón estándar; no se trata de un default mutable problemático.
+ignore = ["RUF012"]

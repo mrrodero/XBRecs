@@ -1,9 +1,15 @@
 from django.urls import path
+
 from .views import (
-    SignupView, HomeView, BookSearchView, DiscoverView,
-    book_rate, book_rate_remove,
     BookDetailView,
-    RecommendView, ProfileView
+    BookSearchView,
+    DiscoverView,
+    HomeView,
+    ProfileView,
+    RecommendView,
+    SignupView,
+    book_rate,
+    book_rate_remove,
 )
 
 urlpatterns = [
@@ -22,6 +28,6 @@ urlpatterns = [
         BookDetailView.as_view(),
         name='book-detail'
     ),
-    path('recommend/<int:count>', RecommendView.as_view(), name='recommend'),
+    path('recommend/<int:count>/', RecommendView.as_view(), name='recommend'),
     path('profile/', ProfileView.as_view(), name='profile'),
 ]

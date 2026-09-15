@@ -1,7 +1,10 @@
-# Datasets
+# Datasets (los archivos grandes no se versionan; ver docs/DATA.md)
 goodbooks_ext/
 books_knn.csv
 datasets/raw/*.csv
+datasets/raw/books_raw.pkl
+datasets/ready/
+datasets/training/
 book_similarity.csv
 
 # Summaries
@@ -19,9 +22,12 @@ BERT*
 # OpenAI
 openai-api
 
-migrations/
 whoosh_index/
 *.zip
+
+# Desarrollo local (PostgreSQL descargado, helpers)
+.dev/
+pytest-cache-files-*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
