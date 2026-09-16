@@ -1,12 +1,18 @@
 # Entorno de desarrollo y pruebas de XBRecs.
 #
 #   pip install -r requirements-dev.txt
+#   pip install -e ../devtools   # plugin de pytest (ver más abajo)
+#
+# O bien, desde la raíz del repositorio:
+#
+#   make install-dev
 
 -r requirements.txt
 
-# Plugin de pytest (módulo `testenv`): fija el entorno de pruebas por
-# defecto antes de que Django se inicie. Se instala como paquete editable.
--e ../devtools
+# El plugin de pytest (módulo `testenv`, en `devtools/`) se instala como
+# paquete editable POR SEPARADO (`pip install -e ../devtools` o
+# `make install-dev`), porque no existe en PyPI y herramientas como
+# `pip-audit` no pueden auditar paquetes editables locales.
 
 pytest==9.1.1
 pytest-django==4.14.0

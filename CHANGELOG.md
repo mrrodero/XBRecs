@@ -4,6 +4,17 @@ Todas las modificaciones notables de este proyecto se documentan en este
 archivo. El formato sigue [Keep a Changelog](https://keepachangelog.com/es/1.1.0/)
 y el proyecto usa [versionado semántico](https://semver.org/lang/es/).
 
+## [2.0.4] - 2026-09-15
+
+### Cambiado
+
+- El paquete editable `devtools` (plugin de pytest `testenv`) ya no se
+  lista en `requirements-dev.txt`: `pip-audit` no puede auditar paquetes
+  que no existen en PyPI (la bandera `--skip-editable` solo aplica con
+  `--disable-pip`, que descarta la resolución de dependencias). Ahora se
+  instala por separado: `make install-dev` o `pip install -e devtools`
+  (el workflow de tests lo hace en su propio paso).
+
 ## [2.0.3] - 2026-09-15
 
 ### Corregido
