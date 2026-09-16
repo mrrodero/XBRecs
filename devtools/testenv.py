@@ -7,7 +7,7 @@ inicie Django. En pytest >= 9 los conftest.py se cargan después del hook
 el entorno a tiempo; un plugin `-p` sí, porque se importa antes.
 
 Este módulo se instala como paquete editable en el entorno de desarrollo
-(ver `xrecommender/requirements-dev.txt`), de modo que es importable
+(`make install-dev` o `pip install -e devtools`), de modo que es importable
 independientemente de cómo se invoque pytest (`pytest`, `python -m pytest`,
 etc.): con el script de consola el directorio de trabajo no está en
 `sys.path`, pero `site-packages` sí.
