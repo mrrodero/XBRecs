@@ -4,6 +4,10 @@
 
 -r requirements.txt
 
+# Plugin de pytest (módulo `testenv`): fija el entorno de pruebas por
+# defecto antes de que Django se inicie. Se instala como paquete editable.
+-e ../devtools
+
 pytest==9.1.1
 pytest-django==4.14.0
 ruff==0.16.7

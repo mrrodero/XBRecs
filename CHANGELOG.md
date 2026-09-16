@@ -4,6 +4,15 @@ Todas las modificaciones notables de este proyecto se documentan en este
 archivo. El formato sigue [Keep a Changelog](https://keepachangelog.com/es/1.1.0/)
 y el proyecto usa [versionado semántico](https://semver.org/lang/es/).
 
+## [2.0.1] - 2026-09-15
+
+### Corregido
+
+- El plugin de pytest `testenv` ya no depende del directorio de trabajo
+  en `sys.path`: ahora se instala como paquete editable (`devtools/`),
+  de modo que `pytest` funciona tanto como script de consola (CI) como
+  con `python -m pytest` (local).
+
 ## [2.0.0] - 2026-09-15
 
 Modernización completa del proyecto (Etapas 0-6 del plan de
