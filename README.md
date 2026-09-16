@@ -106,6 +106,14 @@ make lint      # ruff
   PR y semanalmente.
 - **Dependabot**: actualizaciones semanales de dependencias y acciones.
 
+## Flujo de desarrollo
+
+El repositorio sigue el modelo **Git Flow**: `main` (producción, con tag
+por release), `develop` (integración), y ramas `feature/*`, `release/*` y
+`hotfix/*`. Ver [`CONTRIBUTING.md`](CONTRIBUTING.md) para el ciclo
+completo y [`CHANGELOG.md`](CHANGELOG.md) para el historial de
+versiones.
+
 ## Evaluación con Elliot
 
 Ver [`elliot/README.md`](elliot/README.md). Resumen:
