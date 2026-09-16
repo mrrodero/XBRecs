@@ -28,8 +28,10 @@ jobs:
       - name: Instalar pip-audit
         run: python -m pip install pip-audit
 
+      # `--skip-editable`: los paquetes editables (devtools/testenv) no
+      # existen en PyPI y pip-audit no puede auditarlos.
       - name: Auditar dependencias de la aplicación
-        run: pip-audit -r requirements.txt --strict
+        run: pip-audit -r requirements.txt --strict --skip-editable
 
       - name: Auditar dependencias de desarrollo
-        run: pip-audit -r requirements-dev.txt --strict
+        run: pip-audit -r requirements-dev.txt --strict --skip-editable
