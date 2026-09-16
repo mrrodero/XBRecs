@@ -11,6 +11,13 @@ on:
 jobs:
   pip-audit:
     runs-on: ubuntu-latest
+    # El CWD importa: pip resuelve las rutas relativas de los archivos
+    # de requisitos (p. ej. `-e ../devtools`) respecto al directorio de
+    # trabajo, no respecto al archivo. Por eso se ejecuta desde
+    # `xrecommender/`, igual que el workflow de tests.
+    defaults:
+      run:
+        working-directory: xrecommender
     steps:
       - uses: actions/checkout@v4
 
@@ -22,7 +29,7 @@ jobs:
         run: python -m pip install pip-audit
 
       - name: Auditar dependencias de la aplicación
-        run: pip-audit -r xrecommender/requirements.txt --strict
+        run: pip-audit -r requirements.txt --strict
 
       - name: Auditar dependencias de desarrollo
-        run: pip-audit -r xrecommender/requirements-dev.txt --strict
+        run: pip-audit -r requirements-dev.txt --strict

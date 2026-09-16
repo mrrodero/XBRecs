@@ -4,6 +4,16 @@ Todas las modificaciones notables de este proyecto se documentan en este
 archivo. El formato sigue [Keep a Changelog](https://keepachangelog.com/es/1.1.0/)
 y el proyecto usa [versionado semántico](https://semver.org/lang/es/).
 
+## [2.0.2] - 2026-09-15
+
+### Corregido
+
+- El workflow de seguridad (`pip-audit`) se ejecutaba desde la raíz del
+  repositorio, donde la ruta relativa `-e ../devtools` de
+  `requirements-dev.txt` no se resolvía (pip resuelve rutas relativas de
+  requisitos respecto al directorio de trabajo). Ahora se ejecuta desde
+  `xrecommender/`, igual que el workflow de tests.
+
 ## [2.0.1] - 2026-09-15
 
 ### Corregido
