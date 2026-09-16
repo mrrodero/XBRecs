@@ -4,6 +4,14 @@ Todas las modificaciones notables de este proyecto se documentan en este
 archivo. El formato sigue [Keep a Changelog](https://keepachangelog.com/es/1.1.0/)
 y el proyecto usa [versionado semántico](https://semver.org/lang/es/).
 
+## [2.0.3] - 2026-09-15
+
+### Corregido
+
+- `pip-audit` en CI ya no falla al intentar auditar el paquete editable
+  local `xrecommender-testenv` (no existe en PyPI): ahora se ejecuta con
+  `--skip-editable`.
+
 ## [2.0.2] - 2026-09-15
 
 ### Corregido
