@@ -4,6 +4,15 @@ Todas las modificaciones notables de este proyecto se documentan en este
 archivo. El formato sigue [Keep a Changelog](https://keepachangelog.com/es/1.1.0/)
 y el proyecto usa [versionado semántico](https://semver.org/lang/es/).
 
+## [2.0.5] - 2026-09-16
+
+### Cambiado
+
+- Acciones de GitHub actualizadas en los workflows de CI (`test.yml` y
+  `security.yml`): `actions/checkout` de v4 a v7 y `actions/setup-python`
+  de v5 a v7, lo que elimina las advertencias de Node.js 20 en los
+  runners.
+
 ## [2.0.4] - 2026-09-15
 
 ### Cambiado
