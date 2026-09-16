@@ -11,6 +11,9 @@ on:
 jobs:
   pip-audit:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: xrecommender
     steps:
       - uses: actions/checkout@v4
 
@@ -21,8 +24,11 @@ jobs:
       - name: Instalar pip-audit
         run: python -m pip install pip-audit
 
+      # El paquete editable local `devtools` no se lista en
+      # requirements-dev.txt (pip-audit no puede auditar paquetes que no
+      # existen en PyPI), así que no hace falta ninguna bandera especial.
       - name: Auditar dependencias de la aplicación
-        run: pip-audit -r xrecommender/requirements.txt --strict
+        run: pip-audit -r requirements.txt --strict
 
       - name: Auditar dependencias de desarrollo
-        run: pip-audit -r xrecommender/requirements-dev.txt --strict
+        run: pip-audit -r requirements-dev.txt --strict

@@ -13,9 +13,9 @@ export DEBUG        ?= 1
 export DATABASE_URL ?= postgres://postgres@localhost:5432/xrecommender_dev
 export DJANGO_SETTINGS_MODULE ?= xrecommender.settings
 
-.PHONY: help venv install install-dev check migrate makemigrations migrate \
-        superuser runserver populate recompute test lint format docker-build \
-        docker-up docker-down
+.PHONY: help venv install install-dev check migrate makemigrations \
+        superuser runserver populate recompute test lint format audit \
+        docker-build docker-up docker-down
 
 help:
 	@echo "Objetivos disponibles:"
@@ -32,6 +32,7 @@ help:
 	@echo "  make test           Ejecuta la suite de pruebas (pytest)"
 	@echo "  make lint           Lintea con ruff"
 	@echo "  make format         Formatea el código con ruff"
+	@echo "  make audit          Auditoría de vulnerabilidades (pip-audit)"
 	@echo "  make docker-build   Construye la imagen Docker"
 	@echo "  make docker-up      Levanta la app + PostgreSQL (Docker Compose)"
 	@echo "  make docker-down    Detiene y elimina los contenedores"
@@ -43,7 +44,7 @@ install:
 	$(PIP) install -r xrecommender/requirements.txt
 
 install-dev:
-	$(PIP) install -r xrecommender/requirements-dev.txt
+	$(PIP) install -r xrecommender/requirements-dev.txt -e devtools
 
 check:
 	$(DJANGO) check
@@ -70,10 +71,14 @@ test:
 	cd $(APP_DIR) && $(PYTEST)
 
 lint:
-	$(VENV)/Scripts/ruff.exe check xrecommender/ scripts/ elliot/
+	$(VENV)/Scripts/ruff.exe check xrecommender/ scripts/ elliot/ devtools/
 
 format:
-	$(VENV)/Scripts/ruff.exe format xrecommender/ scripts/ elliot/
+	$(VENV)/Scripts/ruff.exe format xrecommender/ scripts/ elliot/ devtools/
+
+audit:
+	$(VENV)/Scripts/pip-audit.exe -r xrecommender/requirements.txt --strict
+	$(VENV)/Scripts/pip-audit.exe -r xrecommender/requirements-dev.txt --strict
 
 docker-build:
 	docker build -t xrecommender .

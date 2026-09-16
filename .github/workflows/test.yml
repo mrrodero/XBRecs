@@ -45,8 +45,13 @@ jobs:
       - name: Instalar dependencias
         run: python -m pip install -r requirements-dev.txt
 
+      # Plugin de pytest (módulo `testenv`): paquete editable local, fuera
+      # de requirements-dev.txt para que pip-audit pueda auditar ese archivo.
+      - name: Instalar plugin de pruebas (editable)
+        run: python -m pip install -e ../devtools
+
       - name: Ruff (lint)
-        run: ruff check ../xrecommender ../scripts ../elliot
+        run: ruff check ../xrecommender ../scripts ../elliot ../devtools
 
       - name: Pruebas (pytest)
         run: pytest

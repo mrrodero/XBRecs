@@ -5,16 +5,15 @@ Uso:
     python manage.py shell < sanity_check.py   (o ejecutar con python)
 """
 
-from django.conf import settings
-from django.db import connection
-from django.test import Client
-
 from application.models import Book, Rating, Recommendation, User
 from application.recommend import (
     cold_start_recommendations,
     recommend_books,
 )
 from application.xai import get_explanation
+from django.conf import settings
+from django.db import connection
+from django.test import Client
 
 print("=" * 60)
 print("SANEITY CHECK — datos reales")
