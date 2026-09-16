@@ -17,6 +17,7 @@ predictions
 elliot
 notebooks
 docs
+devtools
 
 # Entornos y secretos.
 .env

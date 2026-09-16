@@ -70,10 +70,10 @@ test:
 	cd $(APP_DIR) && $(PYTEST)
 
 lint:
-	$(VENV)/Scripts/ruff.exe check xrecommender/ scripts/ elliot/
+	$(VENV)/Scripts/ruff.exe check xrecommender/ scripts/ elliot/ devtools/
 
 format:
-	$(VENV)/Scripts/ruff.exe format xrecommender/ scripts/ elliot/
+	$(VENV)/Scripts/ruff.exe format xrecommender/ scripts/ elliot/ devtools/
 
 docker-build:
 	docker build -t xrecommender .
